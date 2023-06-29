@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.scbank package &mdash; learn_scgpt v0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scgpt.tokenizer package" href="scgpt.tokenizer.html" />
+    <link rel="prev" title="scgpt.model package" href="scgpt.model.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            learn_scgpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">scgpt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scgpt.html">scgpt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="scgpt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html">scgpt.model package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">scgpt.scbank package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html">scgpt.tokenizer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.utils.html">scgpt.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#scgpt-config-module">scgpt.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.data_collator">scgpt.data_collator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.data_sampler">scgpt.data_sampler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.logger">scgpt.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.loss">scgpt.loss module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.preprocess">scgpt.preprocess module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.trainer">scgpt.trainer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">learn_scgpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">scgpt</a></li>
+          <li class="breadcrumb-item"><a href="scgpt.html">scgpt package</a></li>
+      <li class="breadcrumb-item active">scgpt.scbank package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scgpt.scbank.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scgpt-scbank-package">
+<h1>scgpt.scbank package<a class="headerlink" href="#scgpt-scbank-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-scgpt.scbank.data">
+<span id="scgpt-scbank-data-module"></span><h2>scgpt.scbank.data module<a class="headerlink" href="#module-scgpt.scbank.data" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.scbank.data.DataTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.scbank.data.</span></span><span class="sig-name descname"><span class="pre">DataTable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dataset</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/scbank/data.html#DataTable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.data.DataTable" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The data structure for a single-cell data table.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.DataTable.data">
+<span class="sig-name descname"><span class="pre">data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dataset</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.data.DataTable.data" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="scgpt.scbank.data.DataTable.is_loaded">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_loaded</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#scgpt.scbank.data.DataTable.is_loaded" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.DataTable.name">
+<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#scgpt.scbank.data.DataTable.name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.data.DataTable.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'json'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'parquet'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'json'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/data.html#DataTable.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.data.DataTable.save" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.scbank.data.</span></span><span class="sig-name descname"><span class="pre">MetaInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on_disk_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_disk_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'json'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'parquet'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'json'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_table_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_vocab_md5</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">study_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/scbank/data.html#MetaInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.data.MetaInfo" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The data structure for meta info of a scBank data directory.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.cell_ids">
+<span class="sig-name descname"><span class="pre">cell_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.cell_ids" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.from_path">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/data.html#MetaInfo.from_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.from_path" title="Permalink to this definition"></a></dt>
+<dd><p>Create a MetaInfo object from a path.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.gene_vocab_md5">
+<span class="sig-name descname"><span class="pre">gene_vocab_md5</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.gene_vocab_md5" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/data.html#MetaInfo.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load meta info from path. If path is None, will load from the same path
+at <a class="reference internal" href="#scgpt.scbank.data.MetaInfo.on_disk_path" title="scgpt.scbank.data.MetaInfo.on_disk_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">on_disk_path</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.main_table_key">
+<span class="sig-name descname"><span class="pre">main_table_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.main_table_key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.on_disk_format">
+<span class="sig-name descname"><span class="pre">on_disk_format</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'json'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'parquet'</span></span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'json'</span></em><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.on_disk_format" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.on_disk_path">
+<span class="sig-name descname"><span class="pre">on_disk_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.on_disk_path" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/data.html#MetaInfo.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save meta info to path. If path is None, will save to the same path at
+<a class="reference internal" href="#scgpt.scbank.data.MetaInfo.on_disk_path" title="scgpt.scbank.data.MetaInfo.on_disk_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">on_disk_path</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.data.MetaInfo.study_ids">
+<span class="sig-name descname"><span class="pre">study_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.data.MetaInfo.study_ids" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-scgpt.scbank.databank">
+<span id="scgpt-scbank-databank-module"></span><h2>scgpt.scbank.databank module<a class="headerlink" href="#module-scgpt.scbank.databank" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.scbank.databank.</span></span><span class="sig-name descname"><span class="pre">DataBank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">meta_info:</span> <span class="pre">~scgpt.scbank.data.MetaInfo</span> <span class="pre">|</span> <span class="pre">None</span> <span class="pre">=</span> <span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_tables:</span> <span class="pre">~typing.Dict[str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">~scgpt.scbank.data.DataTable]</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_vocab:</span> <span class="pre">dataclasses.InitVar[GeneVocab]</span> <span class="pre">=</span> <span class="pre">&lt;property</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings:</span> <span class="pre">~scgpt.scbank.setting.Setting</span> <span class="pre">=</span> <span class="pre">&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The data structure for large-scale single cell data containing multiple studies.
+See <a class="reference external" href="https://github.com/subercui/scGPT-release#the-data-structure-for-large-scale-computing">https://github.com/subercui/scGPT-release#the-data-structure-for-large-scale-computing</a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.append_study">
+<span class="sig-name descname"><span class="pre">append_study</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">study_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#scgpt.scbank.databank.DataBank" title="scgpt.scbank.databank.DataBank"><span class="pre">DataBank</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.append_study"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.append_study" title="Permalink to this definition"></a></dt>
+<dd><p>Append a study to the current DataBank.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_id</strong> (<em>str</em>) – Study ID.</p></li>
+<li><p><strong>study_data</strong> (<em>AnnData</em><em> or </em><a class="reference internal" href="#scgpt.scbank.databank.DataBank" title="scgpt.scbank.databank.DataBank"><em>DataBank</em></a>) – Study data.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.batch_from_anndata">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">batch_from_anndata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">AnnData</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.batch_from_anndata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.batch_from_anndata" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.custom_filter">
+<span class="sig-name descname"><span class="pre">custom_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_func</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">callable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.custom_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.custom_filter" title="Permalink to this definition"></a></dt>
+<dd><p>Filter the current DataBank by applying a custom filter function to a field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>field</strong> (<em>str</em>) – Field to filter.</p></li>
+<li><p><strong>filter_func</strong> (<em>callable</em>) – Filter function.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Whether to also filter inplace.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filtered DataBank.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#scgpt.scbank.databank.DataBank" title="scgpt.scbank.databank.DataBank">DataBank</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.data_tables">
+<span class="sig-name descname"><span class="pre">data_tables</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#scgpt.scbank.data.DataTable" title="scgpt.scbank.data.DataTable"><span class="pre">DataTable</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#scgpt.scbank.databank.DataBank.data_tables" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.delete_study">
+<span class="sig-name descname"><span class="pre">delete_study</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.delete_study"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.delete_study" title="Permalink to this definition"></a></dt>
+<dd><p>Delete a study from the current DataBank.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.filter">
+<span class="sig-name descname"><span class="pre">filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.filter" title="Permalink to this definition"></a></dt>
+<dd><p>Filter the current DataBank by study ID and cell ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>study_ids</strong> (<em>list</em>) – Study IDs to filter.</p></li>
+<li><p><strong>cell_ids</strong> (<em>list</em>) – Cell IDs to filter.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em>) – Whether to also filter inplace.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Filtered DataBank.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#scgpt.scbank.databank.DataBank" title="scgpt.scbank.databank.DataBank">DataBank</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.from_anndata">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_anndata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab" title="scgpt.tokenizer.gene_tokenizer.GeneVocab"><span class="pre">GeneVocab</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_table_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'X'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gene</span> <span class="pre">name'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">immediate_save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.from_anndata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.from_anndata" title="Permalink to this definition"></a></dt>
+<dd><p>Create a DataBank from an AnnData object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData</em>) – Annotated data or path to anndata file.</p></li>
+<li><p><strong>vocab</strong> (<a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab" title="scgpt.tokenizer.gene_tokenizer.GeneVocab"><em>GeneVocab</em></a><em> or </em><em>Mapping</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – Gene vocabulary maps gene
+token to index.</p></li>
+<li><p><strong>to</strong> (<em>Path</em><em> or </em><em>str</em>) – Data directory.</p></li>
+<li><p><strong>main_table_key</strong> (<em>str</em>) – This layer/obsm in anndata will be used as the
+main data table.</p></li>
+<li><p><strong>token_col</strong> (<em>str</em>) – Column name of the gene token.</p></li>
+<li><p><strong>immediate_save</strong> (<em>bool</em>) – Whether to save the data immediately after creation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataBank instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#scgpt.scbank.databank.DataBank" title="scgpt.scbank.databank.DataBank">DataBank</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.from_path">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.from_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.from_path" title="Permalink to this definition"></a></dt>
+<dd><p>Create a DataBank from a directory containing scBank data. <strong>NOTE</strong>: this
+method will automatically check whether md5sum record in the <code class="file docutils literal notranslate"><span class="pre">manifest.json</span></code>
+matches the md5sum of the loaded gene vocabulary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em><em> or </em><em>str</em>) – Directory path.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>DataBank instance.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#scgpt.scbank.databank.DataBank" title="scgpt.scbank.databank.DataBank">DataBank</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.gene_vocab">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gene_vocab</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab" title="scgpt.tokenizer.gene_tokenizer.GeneVocab"><span class="pre">GeneVocab</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.databank.DataBank.gene_vocab" title="Permalink to this definition"></a></dt>
+<dd><p>The gene vocabulary mapping gene tokens to integer ids.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.link">
+<span class="sig-name descname"><span class="pre">link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.link" title="Permalink to this definition"></a></dt>
+<dd><p>Link to a scBank data directory. This will only load the meta info
+and perform validation check, but not load the data tables. Usually, can
+use the <cite>.load_table</cite> method to load a data table later.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dataset</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.load" title="Permalink to this definition"></a></dt>
+<dd><p>Load scBank data from a data directory. Since DataBank is designed to work
+with large-scale data, this only loads the main data table to memory by
+default. This does as well load the meta info and perform validation check.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.load_all">
+<span class="sig-name descname"><span class="pre">load_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dataset</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.load_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.load_all" title="Permalink to this definition"></a></dt>
+<dd><p>Load scBank data from a data directory. This will load all the data tables
+to memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.load_anndata">
+<span class="sig-name descname"><span class="pre">load_anndata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token_col</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'gene</span> <span class="pre">name'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#scgpt.scbank.data.DataTable" title="scgpt.scbank.data.DataTable"><span class="pre">DataTable</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.load_anndata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.load_anndata" title="Permalink to this definition"></a></dt>
+<dd><p>Load anndata into datatables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code>) – Annotated data object to load.</p></li>
+<li><p><strong>data_keys</strong> (list of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of data keys to load. If None,
+all data keys in <code class="xref py py-attr docutils literal notranslate"><span class="pre">adata.X</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">adata.layers</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">adata.obsm</span></code> will be loaded.</p></li>
+<li><p><strong>token_col</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Column name of the gene token. Tokens will be
+converted to indices by <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.gene_vocab</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of data tables loaded.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of <code class="xref py py-class docutils literal notranslate"><span class="pre">DataTable</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.load_table">
+<span class="sig-name descname"><span class="pre">load_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dataset</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.load_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.load_table" title="Permalink to this definition"></a></dt>
+<dd><p>Load a data table from the current DataBank.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.main_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_data</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#scgpt.scbank.data.DataTable" title="scgpt.scbank.data.DataTable"><span class="pre">DataTable</span></a></em><a class="headerlink" href="#scgpt.scbank.databank.DataBank.main_data" title="Permalink to this definition"></a></dt>
+<dd><p>The main data table.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.main_table_key">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">main_table_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.databank.DataBank.main_table_key" title="Permalink to this definition"></a></dt>
+<dd><p>The main data table key.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.meta_info">
+<span class="sig-name descname"><span class="pre">meta_info</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#scgpt.scbank.data.MetaInfo" title="scgpt.scbank.data.MetaInfo"><span class="pre">MetaInfo</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.scbank.databank.DataBank.meta_info" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save scBank data to a data directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – Path to save scBank data. If None, will save to the
+directory at <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.meta_info.on_disk_path</span></code>.</p></li>
+<li><p><strong>replace</strong> (<em>bool</em>) – Whether to replace existing data in the directory.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#scgpt.scbank.setting.Setting" title="scgpt.scbank.setting.Setting"><span class="pre">Setting</span></a></em><a class="headerlink" href="#scgpt.scbank.databank.DataBank.settings" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.sync">
+<span class="sig-name descname"><span class="pre">sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.sync" title="Permalink to this definition"></a></dt>
+<dd><p>Sync the current DataBank to a data directory, including, save the updated
+data/vocab to files, update the meta info and save to files.
+<strong>NOTE</strong>: This will overwrite the existing data directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr_keys</strong> (list of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of attribute keys to sync. If None, will
+sync all the attributes with tracked changes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.track">
+<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr_keys</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.track" title="Permalink to this definition"></a></dt>
+<dd><p>Track all the changes made to the current DataBank and that have not been
+synced to disk. This will return a list of changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr_keys</strong> (list of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – List of attribute keys to look for
+changes. If None, all attributes will be checked.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.scbank.databank.DataBank.update_datatables">
+<span class="sig-name descname"><span class="pre">update_datatables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_tables</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#scgpt.scbank.data.DataTable" title="scgpt.scbank.data.DataTable"><span class="pre">DataTable</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">immediate_save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/scbank/databank.html#DataBank.update_datatables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.databank.DataBank.update_datatables" title="Permalink to this definition"></a></dt>
+<dd><p>Update the data tables in the DataBank with new data tables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_tables</strong> (list of <code class="xref py py-class docutils literal notranslate"><span class="pre">DataTable</span></code>) – New data tables to update.</p></li>
+<li><p><strong>use_names</strong> (list of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>) – Names of the new data tables to use.
+If not provided, will use the names of the new data tables.</p></li>
+<li><p><strong>overwrite</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to overwrite the existing data tables.</p></li>
+<li><p><strong>immediate_save</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to save the data immediately after
+updating. Will save to <code class="xref py py-attr docutils literal notranslate"><span class="pre">self.meta_info.on_disk_path</span></code>. If not
+provided, will follow <a href="#id1"><span class="problematic" id="id2">:arrr:`self.settings.immediate_save`</span></a> instead.
+Default to None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-scgpt.scbank.monitor">
+<span id="scgpt-scbank-monitor-module"></span><h2>scgpt.scbank.monitor module<a class="headerlink" href="#module-scgpt.scbank.monitor" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-scgpt.scbank.setting">
+<span id="scgpt-scbank-setting-module"></span><h2>scgpt.scbank.setting module<a class="headerlink" href="#module-scgpt.scbank.setting" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.scbank.setting.Setting">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.scbank.setting.</span></span><span class="sig-name descname"><span class="pre">Setting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">remove_zero_rows</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokenize_batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">immediate_save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/scbank/setting.html#Setting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.scbank.setting.Setting" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The configuration for scBank <code class="xref py py-class docutils literal notranslate"><span class="pre">DataBank</span></code>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.setting.Setting.immediate_save">
+<span class="sig-name descname"><span class="pre">immediate_save</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#scgpt.scbank.setting.Setting.immediate_save" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.setting.Setting.max_tokenize_batch_size">
+<span class="sig-name descname"><span class="pre">max_tokenize_batch_size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1000000.0</span></em><a class="headerlink" href="#scgpt.scbank.setting.Setting.max_tokenize_batch_size" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.scbank.setting.Setting.remove_zero_rows">
+<span class="sig-name descname"><span class="pre">remove_zero_rows</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#scgpt.scbank.setting.Setting.remove_zero_rows" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-scgpt.scbank">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scgpt.scbank" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scgpt.model.html" class="btn btn-neutral float-left" title="scgpt.model package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scgpt.tokenizer.html" class="btn btn-neutral float-right" title="scgpt.tokenizer package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, qiliu-ghddi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

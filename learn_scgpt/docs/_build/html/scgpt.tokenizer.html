@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.tokenizer package &mdash; learn_scgpt v0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scgpt.utils package" href="scgpt.utils.html" />
+    <link rel="prev" title="scgpt.scbank package" href="scgpt.scbank.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            learn_scgpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">scgpt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scgpt.html">scgpt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="scgpt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html">scgpt.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html">scgpt.scbank package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">scgpt.tokenizer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.utils.html">scgpt.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#scgpt-config-module">scgpt.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.data_collator">scgpt.data_collator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.data_sampler">scgpt.data_sampler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.logger">scgpt.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.loss">scgpt.loss module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.preprocess">scgpt.preprocess module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.trainer">scgpt.trainer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">learn_scgpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">scgpt</a></li>
+          <li class="breadcrumb-item"><a href="scgpt.html">scgpt package</a></li>
+      <li class="breadcrumb-item active">scgpt.tokenizer package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scgpt.tokenizer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scgpt-tokenizer-package">
+<h1>scgpt.tokenizer package<a class="headerlink" href="#scgpt-tokenizer-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-scgpt.tokenizer.gene_tokenizer">
+<span id="scgpt-tokenizer-gene-tokenizer-module"></span><h2>scgpt.tokenizer.gene_tokenizer module<a class="headerlink" href="#module-scgpt.tokenizer.gene_tokenizer" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneTokenizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">GeneTokenizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#GeneTokenizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneTokenizer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PreTrainedTokenizer</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">GeneVocab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene_list_or_vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">specials</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_first</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;pad&gt;'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#GeneVocab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Vocab</span></code></p>
+<p>Vocabulary for genes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab.from_dict">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token2idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;pad&gt;'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#GeneVocab.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab.from_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Load the vocabulary from a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>token2idx</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>int</em><em>]</em>) – Dictionary mapping tokens to indices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab.from_file">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Self</span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#GeneVocab.from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab.from_file" title="Permalink to this definition"></a></dt>
+<dd><p>Load the vocabulary from a file. The file should be either a pickle or a
+json file of token to index mapping.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab.pad_token">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pad_token</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab.pad_token" title="Permalink to this definition"></a></dt>
+<dd><p>Get the pad token.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab.save_json">
+<span class="sig-name descname"><span class="pre">save_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#GeneVocab.save_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab.save_json" title="Permalink to this definition"></a></dt>
+<dd><p>Save the vocabulary to a json file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab.set_default_token">
+<span class="sig-name descname"><span class="pre">set_default_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">default_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#GeneVocab.set_default_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab.set_default_token" title="Permalink to this definition"></a></dt>
+<dd><p>Set the default token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>default_token</strong> (<em>str</em>) – Default token.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.GeneVocab.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.get_default_gene_vocab">
+<span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">get_default_gene_vocab</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#scgpt.tokenizer.gene_tokenizer.GeneVocab" title="scgpt.tokenizer.gene_tokenizer.GeneVocab"><span class="pre">GeneVocab</span></a></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#get_default_gene_vocab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.get_default_gene_vocab" title="Permalink to this definition"></a></dt>
+<dd><p>Get the default gene vocabulary, consisting of gene symbols and ids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.pad_batch">
+<span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">pad_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;pad&gt;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls_appended</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#pad_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.pad_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Pad a batch of data. Returns a list of Dict[gene_id, count].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<em>list</em>) – A list of tuple (gene_id, count).</p></li>
+<li><p><strong>max_len</strong> (<em>int</em>) – The maximum length of the batch.</p></li>
+<li><p><strong>vocab</strong> (<em>Vocab</em>) – The vocabulary containing the pad token.</p></li>
+<li><p><strong>pad_token</strong> (<em>str</em>) – The token to pad with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary of gene_id and count.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, torch.Tensor]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.random_mask_value">
+<span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">random_mask_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_ratio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#random_mask_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.random_mask_value" title="Permalink to this definition"></a></dt>
+<dd><p>Randomly mask a batch of data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>values</strong> (<em>array-like</em>) – A batch of tokenized data, with shape (batch_size, n_features).</p></li>
+<li><p><strong>mask_ratio</strong> (<em>float</em>) – The ratio of genes to mask, default to 0.15.</p></li>
+<li><p><strong>mask_value</strong> (<em>int</em>) – The value to mask with, default to -1.</p></li>
+<li><p><strong>pad_value</strong> (<em>int</em>) – The value of padding in the values, will be kept unchanged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tensor of masked data.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.tokenize_and_pad_batch">
+<span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">tokenize_and_pad_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vocab</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Vocab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_zero_gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;cls&gt;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_pt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tensor</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#tokenize_and_pad_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.tokenize_and_pad_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Tokenize and pad a batch of data. Returns a list of tuple (gene_id, count).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.tokenizer.gene_tokenizer.tokenize_batch">
+<span class="sig-prename descclassname"><span class="pre">scgpt.tokenizer.gene_tokenizer.</span></span><span class="sig-name descname"><span class="pre">tokenize_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gene_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_pt</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">append_cls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_zero_gene</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'&lt;cls&gt;'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tensor</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/tokenizer/gene_tokenizer.html#tokenize_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.tokenizer.gene_tokenizer.tokenize_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Tokenize a batch of data. Returns a list of tuple (gene_id, count).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>array-like</em>) – A batch of data, with shape (batch_size, n_features).
+n_features equals the number of all genes.</p></li>
+<li><p><strong>gene_ids</strong> (<em>array-like</em>) – A batch of gene ids, with shape (n_features,).</p></li>
+<li><p><strong>return_pt</strong> (<em>bool</em>) – Whether to return torch tensors of gene_ids and counts,
+default to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A list of tuple (gene_id, count) of non zero gene expressions.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-scgpt.tokenizer">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scgpt.tokenizer" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scgpt.scbank.html" class="btn btn-neutral float-left" title="scgpt.scbank package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scgpt.utils.html" class="btn btn-neutral float-right" title="scgpt.utils package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, qiliu-ghddi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

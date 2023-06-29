@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.scbank.databank &mdash; learn_scgpt v0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            learn_scgpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">scgpt</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">learn_scgpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scgpt.scbank.databank</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scgpt.scbank.databank</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">InitVar</span><span class="p">,</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Self</span><span class="p">,</span> <span class="n">Literal</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">spmatrix</span><span class="p">,</span> <span class="n">csr_matrix</span>
+<span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
+<span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">load_dataset</span>
+<span class="kn">from</span> <span class="nn">scvi</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">from</span> <span class="nn">scgpt.tokenizer</span> <span class="kn">import</span> <span class="n">GeneVocab</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">DataTable</span><span class="p">,</span> <span class="n">MetaInfo</span>
+<span class="kn">from</span> <span class="nn">.setting</span> <span class="kn">import</span> <span class="n">Setting</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">logger</span>
+
+
+<div class="viewcode-block" id="DataBank"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DataBank</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The data structure for large-scale single cell data containing multiple studies.</span>
+<span class="sd">    See https://github.com/subercui/scGPT-release#the-data-structure-for-large-scale-computing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">meta_info</span><span class="p">:</span> <span class="n">MetaInfo</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">data_tables</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Data tables in the DataBank.&quot;</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">gene_vocab</span><span class="p">:</span> <span class="n">InitVar</span><span class="p">[</span><span class="n">GeneVocab</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="c1"># Because of the issue https://github.com/python/cpython/issues/94067, the</span>
+        <span class="c1"># attribute can not be correctly set with default value, if using a getter</span>
+        <span class="c1"># and setter, i.e. @property. So just explicityly set it in the __post_init__.</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;Gene vocabulary mapping gene tokens to integer ids.&quot;</span><span class="p">},</span>
+    <span class="p">)</span>
+    <span class="n">settings</span><span class="p">:</span> <span class="n">Setting</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="n">Setting</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;help&quot;</span><span class="p">:</span> <span class="s2">&quot;The settings for scBank, use default if not set.&quot;</span><span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_vocab</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize a DataBank. If initialize a non-empty DataBank, will check the</span>
+<span class="sd">        meta info and import the data tables. The main data table idicator will be</span>
+<span class="sd">        required, if at least one data table is provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># primarily like the DataSets here, should support slicing, indexing, map, etc.</span>
+
+        <span class="c1"># also, because DataBank is desined to work with large-scale data. The class</span>
+        <span class="c1"># instance itself works like a scheme framework that stores the metadata of</span>
+        <span class="c1"># complete data to easily show or print the info. In the meantime, the actual</span>
+        <span class="c1"># data chunks are kept synchronized in disk, and the DataBank will efficiently</span>
+        <span class="c1"># load and return the partion in memory when queried, in the memory and</span>
+        <span class="c1"># computational effective format of Datasets or Apache Arrow.</span>
+
+        <span class="c1"># DataBank always tracks the current accessed and queried table/partition,</span>
+        <span class="c1"># and the changes made. When trying to close the current table or switching</span>
+        <span class="c1"># to another one, DataBank will explicitly ask whether to save the changes</span>
+        <span class="c1"># to disk, and show the info of the updated table fields.</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gene_vocab</span><span class="p">,</span> <span class="nb">property</span><span class="p">):</span>
+            <span class="c1"># walkaround for the issue https://github.com/python/cpython/issues/94067</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gene_vocab</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span> <span class="o">=</span> <span class="n">gene_vocab</span>
+
+        <span class="c1"># empty initialization:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide meta info if non-empty data tables.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide meta info if non-empty gene vocab.&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Initialize an empty DataBank.&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># only-meta-info initializtion:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;DataBank initialized with meta info only.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">immediate_save</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">()</span>
+            <span class="k">return</span>
+
+        <span class="c1"># full initialization:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to provide gene vocab if non-empty data tables.&quot;</span><span class="p">)</span>
+        <span class="c1"># validate the meta info, and the consistency between meta and data tables</span>
+        <span class="c1"># we assume the input meta_info is complete and correct. Usually this should</span>
+        <span class="c1"># be handled by factory constructors.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">immediate_save</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">gene_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GeneVocab</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The gene vocabulary mapping gene tokens to integer ids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if self._gene_vocab is None:</span>
+        <span class="c1">#     self._gene_vocab = GeneVocab.load(self.meta_info.gene_vocab_path)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gene_vocab</span>
+
+    <span class="nd">@gene_vocab</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">gene_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gene_vocab</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GeneVocab</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the gene vocabulary from an :obj:`GeneVocab` object or a file path.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gene_vocab</span><span class="p">,</span> <span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="n">gene_vocab</span> <span class="o">=</span> <span class="n">GeneVocab</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">gene_vocab</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gene_vocab</span><span class="p">,</span> <span class="n">GeneVocab</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gene_vocab must be a GeneVocab object or a path.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_vocab</span><span class="p">(</span><span class="n">gene_vocab</span><span class="p">)</span>  <span class="c1"># e.g. check md5 every time calling setter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gene_vocab</span> <span class="o">=</span> <span class="n">gene_vocab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span>  <span class="c1"># sync to disk, update md5 in meta info</span>
+            <span class="n">attr_keys</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gene_vocab&quot;</span><span class="p">]</span>
+        <span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">immediate_save</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">([</span><span class="s2">&quot;gene_vocab&quot;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">main_table_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The main data table key.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">main_table_key</span>
+
+    <span class="nd">@main_table_key</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">main_table_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the main data table key.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Need to have self.meta_info if setting main table key.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">main_table_key</span> <span class="o">=</span> <span class="n">table_key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">([</span><span class="s2">&quot;meta_info&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">immediate_save</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span>
+            <span class="p">[</span><span class="s2">&quot;meta_info&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">main_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTable</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The main data table.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">main_table_key</span><span class="p">]</span>
+
+<div class="viewcode-block" id="DataBank.from_anndata"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.from_anndata">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_anndata</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">adata</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AnnData</span><span class="p">,</span> <span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">vocab</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GeneVocab</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="n">to</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
+        <span class="n">main_table_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span>
+        <span class="n">token_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gene name&quot;</span><span class="p">,</span>
+        <span class="n">immediate_save</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DataBank from an AnnData object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            adata (AnnData): Annotated data or path to anndata file.</span>
+<span class="sd">            vocab (GeneVocab or Mapping[str, int]): Gene vocabulary maps gene</span>
+<span class="sd">                token to index.</span>
+<span class="sd">            to (Path or str): Data directory.</span>
+<span class="sd">            main_table_key (str): This layer/obsm in anndata will be used as the</span>
+<span class="sd">                main data table.</span>
+<span class="sd">            token_col (str): Column name of the gene token.</span>
+<span class="sd">            immediate_save (bool): Whether to save the data immediately after creation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataBank: DataBank instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+            <span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
+
+            <span class="n">adata</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">AnnData</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;adata must points to an AnnData object.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="p">(</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)):</span>
+            <span class="n">vocab</span> <span class="o">=</span> <span class="n">GeneVocab</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">GeneVocab</span><span class="p">):</span>
+            <span class="n">vocab</span> <span class="o">=</span> <span class="n">GeneVocab</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">GeneVocab</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;vocab must be a GeneVocab object or a mapping.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">to</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">to</span><span class="p">)</span>
+        <span class="n">to</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+            <span class="n">meta_info</span><span class="o">=</span><span class="n">MetaInfo</span><span class="p">(</span><span class="n">on_disk_path</span><span class="o">=</span><span class="n">to</span><span class="p">),</span>
+            <span class="n">gene_vocab</span><span class="o">=</span><span class="n">vocab</span><span class="p">,</span>
+            <span class="n">settings</span><span class="o">=</span><span class="n">Setting</span><span class="p">(</span><span class="n">immediate_save</span><span class="o">=</span><span class="n">immediate_save</span><span class="p">),</span>
+        <span class="p">)</span>
+
+        <span class="c1"># TODO: Add other data tables, currently only read the main data</span>
+        <span class="n">data_table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">load_anndata</span><span class="p">(</span>
+            <span class="n">adata</span><span class="p">,</span>
+            <span class="n">data_keys</span><span class="o">=</span><span class="p">[</span><span class="n">main_table_key</span><span class="p">],</span>
+            <span class="n">token_col</span><span class="o">=</span><span class="n">token_col</span><span class="p">,</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># update and immediate save</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">main_table_key</span> <span class="o">=</span> <span class="n">main_table_key</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">update_datatables</span><span class="p">(</span><span class="n">new_tables</span><span class="o">=</span><span class="p">[</span><span class="n">data_table</span><span class="p">],</span> <span class="n">immediate_save</span><span class="o">=</span><span class="n">immediate_save</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">db</span></div>
+
+<div class="viewcode-block" id="DataBank.batch_from_anndata"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.batch_from_anndata">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">batch_from_anndata</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">adata</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnnData</span><span class="p">],</span> <span class="n">to</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.from_path"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.from_path">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DataBank from a directory containing scBank data. **NOTE**: this</span>
+<span class="sd">        method will automatically check whether md5sum record in the :file:`manifest.json`</span>
+<span class="sd">        matches the md5sum of the loaded gene vocabulary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (Path or str): Directory path.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataBank: DataBank instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> is not a directory.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;gene_vocab.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;DataBank at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> does not contain gene_vocab.json.&quot;</span><span class="p">)</span>
+        <span class="n">data_table_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">path</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.datatable.*&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data_table_files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading empty DataBank at </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> without datatables.&quot;</span><span class="p">)</span>
+
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">meta_info</span><span class="o">=</span><span class="n">MetaInfo</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">gene_vocab</span> <span class="o">=</span> <span class="n">GeneVocab</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="s2">&quot;gene_vocab.json&quot;</span><span class="p">)</span>
+        <span class="n">data_format</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">on_disk_format</span>
+        <span class="k">for</span> <span class="n">data_table_file</span> <span class="ow">in</span> <span class="n">data_table_files</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading datatable </span><span class="si">{</span><span class="n">data_table_file</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="n">data_table</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">data_table_file</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">load_dataset</span><span class="p">(</span>
+                    <span class="n">data_format</span><span class="p">,</span>
+                    <span class="n">data_files</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">data_table_file</span><span class="p">),</span>
+                    <span class="n">cache_dir</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+                    <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train&quot;</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">update_datatables</span><span class="p">(</span><span class="n">new_tables</span><span class="o">=</span><span class="p">[</span><span class="n">data_table</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">db</span></div>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of cells in DataBank.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">_load_anndata_layer</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
+        <span class="n">data_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;X&quot;</span><span class="p">,</span>
+        <span class="n">index_map</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dataset</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load anndata layer as a :class:Dataset object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            adata (:class:`AnnData`): Annotated data object to load.</span>
+<span class="sd">            data_key (:obj:`str`, optional): Data key to load, default to &quot;X&quot;. The data</span>
+<span class="sd">                key must be in :attr:`adata.X`, :attr:`adata.layers` or :attr:`adata.obsm`.</span>
+<span class="sd">            index_map (:obj:`Mapping[int, int]`, optional): A mapping from old index</span>
+<span class="sd">                to new index. If None, meaning the index is unchanged and the converted</span>
+<span class="sd">                data rows do not have explicit keys.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :class:`Dataset`: Dataset object loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">AnnData</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;adata must be an AnnData object.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">index_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># TODO: implement loading data w/ index unchanged, i.e. w/o explicit keys</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="n">data_key</span> <span class="o">==</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">X</span>
+        <span class="k">elif</span> <span class="n">data_key</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">data_key</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data key </span><span class="si">{</span><span class="n">data_key</span><span class="si">}</span><span class="s2"> not found, skip loading.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">tokenized_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tokenize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index_map</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Dataset</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">tokenized_data</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_tokenize</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">],</span>
+        <span class="n">ind2ind</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">new_indices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tokenize the data with the given vocabulary.</span>
+
+<span class="sd">        TODO: currently by default uses the key-value datatable scheme. Add</span>
+<span class="sd">        other support.</span>
+
+<span class="sd">        TODO: currently just counting from zero for the cell id.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (np.ndarray or spmatrix): Data to be tokenized.</span>
+<span class="sd">            tokens (List[str]): List of gene tokens.</span>
+<span class="sd">            ind2ind (Mapping[str, int]): Old index to new index mapping.</span>
+<span class="sd">            new_indices (List[int]): New indices to be used, will ignore ind2ind.</span>
+<span class="sd">                **NOTE**: Usually this should be None. Should only be used in the</span>
+<span class="sd">                spawned recursive calls if any.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, List]: Tokenized data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;data must be a numpy array or sparse matrix.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">zero_ratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span>
+            <span class="k">if</span> <span class="n">zero_ratio</span> <span class="o">&gt;</span> <span class="mf">0.85</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">zero_ratio</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">% of the data is zero, &quot;</span>
+                    <span class="s2">&quot;auto convert to sparse matrix before tokenizing.&quot;</span>
+                <span class="p">)</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># process sparse matrix actually faster</span>
+
+        <span class="c1"># remove zero rows</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">remove_zero_rows</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mf">1e9</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+                    <span class="s2">&quot;Going to remove zero rows from a large ndarray data. This &quot;</span>
+                    <span class="s2">&quot;may take long time. If you want to disable this, set &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;`remove_zero_rows` to False in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.settings.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">getnnz</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># usually means n_cells, n_genes</span>
+        <span class="k">if</span> <span class="n">new_indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">ind2ind</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cols</span><span class="p">)],</span> <span class="nb">int</span>
+            <span class="p">)</span>  <span class="c1"># TODO: can be accelerated</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_indices</span><span class="p">)</span> <span class="o">==</span> <span class="n">n_cols</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">csr_matrix</span><span class="p">):</span>
+            <span class="n">indptr</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">indptr</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">indices</span>
+            <span class="n">non_zero_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">data</span>
+
+            <span class="n">tokenized_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;genes&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;expressions&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="n">tokenized_data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rows</span><span class="p">):</span>  <span class="c1"># ~2s/100k cells</span>
+                <span class="n">row_indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">indptr</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+                <span class="n">row_new_indices</span> <span class="o">=</span> <span class="n">new_indices</span><span class="p">[</span><span class="n">row_indices</span><span class="p">]</span>
+                <span class="n">row_non_zero_data</span> <span class="o">=</span> <span class="n">non_zero_data</span><span class="p">[</span><span class="n">indptr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">:</span> <span class="n">indptr</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]]</span>
+
+                <span class="n">match_mask</span> <span class="o">=</span> <span class="n">row_new_indices</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">100</span>
+                <span class="n">row_new_indices</span> <span class="o">=</span> <span class="n">row_new_indices</span><span class="p">[</span><span class="n">match_mask</span><span class="p">]</span>
+                <span class="n">row_non_zero_data</span> <span class="o">=</span> <span class="n">row_non_zero_data</span><span class="p">[</span><span class="n">match_mask</span><span class="p">]</span>
+
+                <span class="n">tokenized_data</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_new_indices</span><span class="p">)</span>
+                <span class="n">tokenized_data</span><span class="p">[</span><span class="s2">&quot;expressions&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row_non_zero_data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># remove -100 cols in data and new_indices, i.e. genes not in vocab</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">new_indices</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">100</span>
+            <span class="n">new_indices</span> <span class="o">=</span> <span class="n">new_indices</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">mask</span><span class="p">]</span>
+            <span class="n">tokenized_data</span> <span class="o">=</span> <span class="n">_nparray2mapped_values</span><span class="p">(</span>
+                <span class="n">data</span><span class="p">,</span> <span class="n">new_indices</span><span class="p">,</span> <span class="s2">&quot;numba&quot;</span>
+            <span class="p">)</span>  <span class="c1"># ~7s/100k cells</span>
+
+        <span class="k">return</span> <span class="n">tokenized_data</span>
+
+    <span class="k">def</span> <span class="nf">_validate_vocab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GeneVocab</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the vocabulary. Check :attr:`self.vocab` if no vocab is given.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">vocab</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vocab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span>
+        <span class="c1"># TODO: implement validation</span>
+
+    <span class="k">def</span> <span class="nf">_validate_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate the current DataBank, including checking md5sum, table names, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># first validate vocabulary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_vocab</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_table_key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;No data tables found, but main table key is set. &quot;</span>
+                <span class="s2">&quot;Please set main table key to None or add data tables.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_table_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Main table key can not be empty if non-empty data tables.&quot;</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_table_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;Main table key </span><span class="si">{self.main_table_key}</span><span class="s2"> not found in data tables.&quot;</span>
+                <span class="p">)</span>
+
+<div class="viewcode-block" id="DataBank.update_datatables"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.update_datatables">[docs]</a>    <span class="k">def</span> <span class="nf">update_datatables</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">new_tables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DataTable</span><span class="p">],</span>
+        <span class="n">use_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">overwrite</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">immediate_save</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the data tables in the DataBank with new data tables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_tables (list of :class:`DataTable`): New data tables to update.</span>
+<span class="sd">            use_names (list of :obj:`str`): Names of the new data tables to use.</span>
+<span class="sd">                If not provided, will use the names of the new data tables.</span>
+<span class="sd">            overwrite (:obj:`bool`): Whether to overwrite the existing data tables.</span>
+<span class="sd">            immediate_save (:obj:`bool`): Whether to save the data immediately after</span>
+<span class="sd">                updating. Will save to :attr:`self.meta_info.on_disk_path`. If not</span>
+<span class="sd">                provided, will follow :arrr:`self.settings.immediate_save` instead.</span>
+<span class="sd">                Default to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_tables</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">DataTable</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">new_tables</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;new_tables must be a list of DataTable.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">use_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">new_tables</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">use_names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_tables</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;use_names must have the same length as new_tables.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">overlaps</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">use_names</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlaps</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Data table names </span><span class="si">{</span><span class="n">overlaps</span><span class="si">}</span><span class="s2"> already exist in the DataBank. &quot;</span>
+                    <span class="s2">&quot;Please set overwrite=True if replacing the existing data table.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">immediate_save</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">immediate_save</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">immediate_save</span>
+
+        <span class="k">for</span> <span class="n">dt</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">new_tables</span><span class="p">,</span> <span class="n">use_names</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">dt</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_data</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sync</span><span class="p">(</span><span class="s2">&quot;data_tables&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">immediate_save</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">(</span><span class="s2">&quot;data_tables&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataBank.load_anndata"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.load_anndata">[docs]</a>    <span class="k">def</span> <span class="nf">load_anndata</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">adata</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
+        <span class="n">data_keys</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">token_col</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gene name&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DataTable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load anndata into datatables.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            adata (:class:`AnnData`): Annotated data object to load.</span>
+<span class="sd">            data_keys (list of :obj:`str`): List of data keys to load. If None,</span>
+<span class="sd">                all data keys in :attr:`adata.X`, :attr:`adata.layers` and</span>
+<span class="sd">                :attr:`adata.obsm` will be loaded.</span>
+<span class="sd">            token_col (:obj:`str`): Column name of the gene token. Tokens will be</span>
+<span class="sd">                converted to indices by :attr:`self.gene_vocab`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of :class:`DataTable`: List of data tables loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">AnnData</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;adata must be an AnnData object.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">data_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">token_col</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;token_col </span><span class="si">{</span><span class="n">token_col</span><span class="si">}</span><span class="s2"> not found in adata.var.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">token_col</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;token_col </span><span class="si">{</span><span class="n">token_col</span><span class="si">}</span><span class="s2"> must be of type str.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># validate matching between tokens and vocab</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="n">token_col</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">match_ratio</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="mi">1</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match_ratio</span> <span class="o">&lt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">match_ratio</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2">% of the tokens in adata.var[</span><span class="si">{</span><span class="n">token_col</span><span class="si">}</span><span class="s2">] are not in &quot;</span>
+                <span class="s2">&quot;vocab. Please check if using the correct vocab and token_col.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># build mapping to scBank datatable keys</span>
+        <span class="n">_ind2ind</span> <span class="o">=</span> <span class="n">_map_ind</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span><span class="p">)</span>  <span class="c1"># old index to new index</span>
+
+        <span class="n">data_tables</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">data_keys</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_anndata_layer</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">_ind2ind</span><span class="p">)</span>
+            <span class="n">data_table</span> <span class="o">=</span> <span class="n">DataTable</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">key</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">data_tables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_table</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_tables</span></div>
+
+<div class="viewcode-block" id="DataBank.append_study"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.append_study">[docs]</a>    <span class="k">def</span> <span class="nf">append_study</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">study_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">study_data</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">AnnData</span><span class="p">,</span> <span class="s2">&quot;DataBank&quot;</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Append a study to the current DataBank.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            study_id (str): Study ID.</span>
+<span class="sd">            study_data (AnnData or DataBank): Study data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.delete_study"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.delete_study">[docs]</a>    <span class="k">def</span> <span class="nf">delete_study</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">study_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a study from the current DataBank.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.filter"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">study_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cell_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter the current DataBank by study ID and cell ID.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            study_ids (list): Study IDs to filter.</span>
+<span class="sd">            cell_ids (list): Cell IDs to filter.</span>
+<span class="sd">            inplace (bool): Whether to also filter inplace.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataBank: Filtered DataBank.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.custom_filter"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.custom_filter">[docs]</a>    <span class="k">def</span> <span class="nf">custom_filter</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">filter_func</span><span class="p">:</span> <span class="nb">callable</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter the current DataBank by applying a custom filter function to a field.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            field (str): Field to filter.</span>
+<span class="sd">            filter_func (callable): Filter function.</span>
+<span class="sd">            inplace (bool): Whether to also filter inplace.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataBank: Filtered DataBank.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.link"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.link">[docs]</a>    <span class="k">def</span> <span class="nf">link</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Link to a scBank data directory. This will only load the meta info</span>
+<span class="sd">        and perform validation check, but not load the data tables. Usually, can</span>
+<span class="sd">        use the `.load_table` method to load a data table later.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Data path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> should be a directory.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.load_table"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.load_table">[docs]</a>    <span class="k">def</span> <span class="nf">load_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">table_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load a data table from the current DataBank.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.load"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dataset</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load scBank data from a data directory. Since DataBank is designed to work</span>
+<span class="sd">        with large-scale data, this only loads the main data table to memory by</span>
+<span class="sd">        default. This does as well load the meta info and perform validation check.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Data path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> should be a directory.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.load_all"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.load_all">[docs]</a>    <span class="k">def</span> <span class="nf">load_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load scBank data from a data directory. This will load all the data tables</span>
+<span class="sd">        to memory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">(),</span> <span class="sa">f</span><span class="s2">&quot;Data path </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> should be a directory.&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+<div class="viewcode-block" id="DataBank.track"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Track all the changes made to the current DataBank and that have not been</span>
+<span class="sd">        synced to disk. This will return a list of changes.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attr_keys (list of :obj:`str`): List of attribute keys to look for</span>
+<span class="sd">                changes. If None, all attributes will be checked.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">attr_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">attr_keys</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">&quot;meta_info&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;data_tables&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;gene_vocab&quot;</span><span class="p">,</span>
+            <span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">attr_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_keys</span><span class="p">]</span>
+
+        <span class="n">changed_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># TODO: implement the checking of the changes, currently just return all</span>
+        <span class="n">changed_attrs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">attr_keys</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">changed_attrs</span></div>
+
+<div class="viewcode-block" id="DataBank.sync"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.sync">[docs]</a>    <span class="k">def</span> <span class="nf">sync</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr_keys</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sync the current DataBank to a data directory, including, save the updated</span>
+<span class="sd">        data/vocab to files, update the meta info and save to files.</span>
+<span class="sd">        **NOTE**: This will overwrite the existing data directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attr_keys (list of :obj:`str`): List of attribute keys to sync. If None, will</span>
+<span class="sd">                sync all the attributes with tracked changes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">attr_keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">attr_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attr_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">attr_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">attr_keys</span><span class="p">]</span>
+
+        <span class="c1"># TODO: implement. Remeber particularly to update md5 in metainfo when</span>
+        <span class="c1"># updating the gene vocabulary.</span>
+
+        <span class="n">on_disk_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">on_disk_path</span>
+        <span class="n">data_format</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">on_disk_format</span>
+        <span class="k">if</span> <span class="s2">&quot;meta_info&quot;</span> <span class="ow">in</span> <span class="n">attr_keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">on_disk_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;data_tables&quot;</span> <span class="ow">in</span> <span class="n">attr_keys</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">data_table</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_tables</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">save_to</span> <span class="o">=</span> <span class="n">on_disk_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">data_table</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">.datatable.</span><span class="si">{</span><span class="n">data_format</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saving data table </span><span class="si">{</span><span class="n">data_table</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> to </span><span class="si">{</span><span class="n">save_to</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+                <span class="n">data_table</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
+                    <span class="n">path</span><span class="o">=</span><span class="n">save_to</span><span class="p">,</span>
+                    <span class="nb">format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;gene_vocab&quot;</span> <span class="ow">in</span> <span class="n">attr_keys</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_vocab</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_gene_vocab</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">on_disk_path</span> <span class="o">/</span> <span class="s2">&quot;gene_vocab.json&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DataBank.save"><a class="viewcode-back" href="../../../scgpt.scbank.html#scgpt.scbank.databank.DataBank.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save scBank data to a data directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path (Path): Path to save scBank data. If None, will save to the</span>
+<span class="sd">                directory at :attr:`self.meta_info.on_disk_path`.</span>
+<span class="sd">            replace (bool): Whether to replace existing data in the directory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">meta_info</span><span class="o">.</span><span class="n">on_disk_path</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_map_ind</span><span class="p">(</span><span class="n">tokens</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">vocab</span><span class="p">:</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a mapping from old index to new index, for a list of tokens.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        tokens (list): List of tokens, in the order of old indeces.</span>
+<span class="sd">        vocab (Mapping[str, int]): Vocabulary mapping from token to new index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ind2ind</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">unmatched_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">:</span>
+            <span class="n">ind2ind</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vocab</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">unmatched_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unmatched_tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unmatched_tokens</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="si">}</span><span class="s2"> tokens/genes unmatched &quot;</span>
+            <span class="s2">&quot;during vocabulary conversion.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ind2ind</span>
+
+
+<span class="k">def</span> <span class="nf">_nparray2mapped_values</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">new_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;plain&quot;</span><span class="p">,</span> <span class="s2">&quot;numba&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;plain&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a numpy array to mapped values. Only include the non-zero values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (np.ndarray): Data matrix.</span>
+<span class="sd">        new_indices (np.ndarray): New indices.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, List]: Mapping from column name to list of values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;plain&quot;</span><span class="p">:</span>
+        <span class="n">convert_func</span> <span class="o">=</span> <span class="n">_nparray2indexed_values</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;numba&quot;</span><span class="p">:</span>
+        <span class="n">convert_func</span> <span class="o">=</span> <span class="n">_nparray2indexed_values_numba</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown mode </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+    <span class="n">tokenized_data</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">row_ids</span><span class="p">,</span> <span class="n">col_inds</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">convert_func</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">new_indices</span><span class="p">)</span>
+
+    <span class="n">tokenized_data</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row_ids</span>
+    <span class="n">tokenized_data</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_inds</span>
+    <span class="n">tokenized_data</span><span class="p">[</span><span class="s2">&quot;expressions&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+    <span class="k">return</span> <span class="n">tokenized_data</span>
+
+
+<span class="k">def</span> <span class="nf">_nparray2indexed_values</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">new_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a numpy array to indexed values. Only include the non-zero values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (np.ndarray): Data matrix.</span>
+<span class="sd">        new_indices (np.ndarray): New indices.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[List, List, List]: Row IDs, column indices, and values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">row_ids</span><span class="p">,</span> <span class="n">col_inds</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>  <span class="c1"># TODO: accelerate with numba? joblib?</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">row</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">expressions</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">genes</span> <span class="o">=</span> <span class="n">new_indices</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="n">row_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">col_inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expressions</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">row_ids</span><span class="p">,</span> <span class="n">col_inds</span><span class="p">,</span> <span class="n">values</span>
+
+
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">jit</span><span class="p">,</span> <span class="n">njit</span><span class="p">,</span> <span class="n">prange</span>
+
+
+<span class="nd">@njit</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_nparray2indexed_values_numba</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">new_indices</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert a numpy array to indexed values. Only include the non-zero values.</span>
+<span class="sd">    Using numba to accelerate.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (np.ndarray): Data matrix.</span>
+<span class="sd">        new_indices (np.ndarray): New indices.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Tuple[List, List, List]: Row IDs, column indices, and values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">row_ids</span><span class="p">,</span> <span class="n">col_inds</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+        <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span>
+    <span class="p">)</span>  <span class="c1"># placeholders</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">prange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">row</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">expressions</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">genes</span> <span class="o">=</span> <span class="n">new_indices</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="n">row_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="n">col_inds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">genes</span>
+        <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">expressions</span>
+
+    <span class="k">return</span> <span class="n">row_ids</span><span class="p">,</span> <span class="n">col_inds</span><span class="p">,</span> <span class="n">values</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, qiliu-ghddi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

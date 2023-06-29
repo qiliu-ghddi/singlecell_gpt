@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.tokenizer.gene_tokenizer &mdash; learn_scgpt v0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            learn_scgpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">scgpt</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">learn_scgpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scgpt.tokenizer.gene_tokenizer</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scgpt.tokenizer.gene_tokenizer</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Self</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torchtext.vocab</span> <span class="k">as</span> <span class="nn">torch_vocab</span>
+<span class="kn">from</span> <span class="nn">torchtext.vocab</span> <span class="kn">import</span> <span class="n">Vocab</span>
+<span class="kn">from</span> <span class="nn">transformers.tokenization_utils</span> <span class="kn">import</span> <span class="n">PreTrainedTokenizer</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span><span class="p">,</span> <span class="n">BertTokenizer</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">logger</span>
+
+
+<div class="viewcode-block" id="GeneTokenizer"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneTokenizer">[docs]</a><span class="k">class</span> <span class="nc">GeneTokenizer</span><span class="p">(</span><span class="n">PreTrainedTokenizer</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="GeneVocab"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab">[docs]</a><span class="k">class</span> <span class="nc">GeneVocab</span><span class="p">(</span><span class="n">Vocab</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Vocabulary for genes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">gene_list_or_vocab</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Vocab</span><span class="p">],</span>
+        <span class="n">specials</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">special_first</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">default_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the vocabulary.</span>
+<span class="sd">        Note: add specials only works when init from a gene list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gene_list_or_vocab (List[str] or Vocab): List of gene names or a</span>
+<span class="sd">                Vocab object.</span>
+<span class="sd">            specials (List[str]): List of special tokens.</span>
+<span class="sd">            special_first (bool): Whether to add special tokens to the beginning</span>
+<span class="sd">                of the vocabulary.</span>
+<span class="sd">            default_token (str): Default token, by default will set to &quot;&lt;pad&gt;&quot;,</span>
+<span class="sd">                if &quot;&lt;pad&gt;&quot; is in the vocabulary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gene_list_or_vocab</span><span class="p">,</span> <span class="n">Vocab</span><span class="p">):</span>
+            <span class="n">_vocab</span> <span class="o">=</span> <span class="n">gene_list_or_vocab</span>
+            <span class="k">if</span> <span class="n">specials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;receive non-empty specials when init from a Vocab object.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gene_list_or_vocab</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">_vocab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_vocab_from_iterator</span><span class="p">(</span>
+                <span class="n">gene_list_or_vocab</span><span class="p">,</span>
+                <span class="n">specials</span><span class="o">=</span><span class="n">specials</span><span class="p">,</span>
+                <span class="n">special_first</span><span class="o">=</span><span class="n">special_first</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;gene_list_or_vocab must be a list of gene names or a Vocab object.&quot;</span>
+            <span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">_vocab</span><span class="o">.</span><span class="n">vocab</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">default_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">default_token</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_default_token</span><span class="p">(</span><span class="n">default_token</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GeneVocab.from_file"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.from_file">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the vocabulary from a file. The file should be either a pickle or a</span>
+<span class="sd">        json file of token to index mapping.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.pkl&quot;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">vocab</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">file_path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s2">&quot;.json&quot;</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">token2idx</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">token2idx</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> is not a valid file type. &quot;</span>
+                <span class="s2">&quot;Only .pkl and .json are supported.&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeneVocab.from_dict"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span>
+        <span class="bp">cls</span><span class="p">,</span>
+        <span class="n">token2idx</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
+        <span class="n">default_token</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load the vocabulary from a dictionary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            token2idx (Dict[str, int]): Dictionary mapping tokens to indices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># initiate an empty vocabulary first</span>
+        <span class="n">_vocab</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">([])</span>
+
+        <span class="c1"># add the tokens to the vocabulary, GeneVocab requires consecutive indices</span>
+        <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">token2idx</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="n">_vocab</span><span class="o">.</span><span class="n">insert_token</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">default_token</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">default_token</span> <span class="ow">in</span> <span class="n">_vocab</span><span class="p">:</span>
+            <span class="n">_vocab</span><span class="o">.</span><span class="n">set_default_token</span><span class="p">(</span><span class="n">default_token</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_vocab</span></div>
+
+    <span class="k">def</span> <span class="nf">_build_vocab_from_iterator</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">iterator</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span>
+        <span class="n">min_freq</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">specials</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">special_first</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Vocab</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build a Vocab from an iterator. This function is modified from</span>
+<span class="sd">        torchtext.vocab.build_vocab_from_iterator. The original function always</span>
+<span class="sd">        splits tokens into characters, which is not what we want.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            iterator (Iterable): Iterator used to build Vocab. Must yield list</span>
+<span class="sd">                or iterator of tokens.</span>
+<span class="sd">            min_freq (int): The minimum frequency needed to include a token in</span>
+<span class="sd">                the vocabulary.</span>
+<span class="sd">            specials (List[str]): Special symbols to add. The order of supplied</span>
+<span class="sd">                tokens will be preserved.</span>
+<span class="sd">            special_first (bool): Whether to add special tokens to the beginning</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torchtext.vocab.Vocab: A `Vocab` object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">counter</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">specials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">specials</span><span class="p">:</span>
+                <span class="k">del</span> <span class="n">counter</span><span class="p">[</span><span class="n">tok</span><span class="p">]</span>
+
+        <span class="n">sorted_by_freq_tuples</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">counter</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">sorted_by_freq_tuples</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">ordered_dict</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">(</span><span class="n">sorted_by_freq_tuples</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">specials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">special_first</span><span class="p">:</span>
+                <span class="n">specials</span> <span class="o">=</span> <span class="n">specials</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">specials</span><span class="p">:</span>
+                <span class="n">ordered_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">symbol</span><span class="p">:</span> <span class="n">min_freq</span><span class="p">})</span>
+                <span class="n">ordered_dict</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="n">symbol</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="ow">not</span> <span class="n">special_first</span><span class="p">)</span>
+
+        <span class="n">word_vocab</span> <span class="o">=</span> <span class="n">torch_vocab</span><span class="o">.</span><span class="n">vocab</span><span class="p">(</span><span class="n">ordered_dict</span><span class="p">,</span> <span class="n">min_freq</span><span class="o">=</span><span class="n">min_freq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">word_vocab</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">pad_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the pad token.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_pad_token&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_pad_token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad_token</span>
+
+    <span class="nd">@pad_token</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">pad_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the pad token. Will not add the pad token to the vocabulary.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pad_token (str): Pad token, should be in the vocabulary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pad_token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pad_token</span><span class="si">}</span><span class="s2"> is not in the vocabulary.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pad_token</span> <span class="o">=</span> <span class="n">pad_token</span>
+
+<div class="viewcode-block" id="GeneVocab.save_json"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.save_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save the vocabulary to a json file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">file_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_stoi</span><span class="p">(),</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GeneVocab.set_default_token"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.set_default_token">[docs]</a>    <span class="k">def</span> <span class="nf">set_default_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the default token.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            default_token (str): Default token.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">default_token</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">default_token</span><span class="si">}</span><span class="s2"> is not in the vocabulary.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_default_index</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">default_token</span><span class="p">])</span></div></div>
+
+
+<div class="viewcode-block" id="get_default_gene_vocab"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.get_default_gene_vocab">[docs]</a><span class="k">def</span> <span class="nf">get_default_gene_vocab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">GeneVocab</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the default gene vocabulary, consisting of gene symbols and ids.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vocab_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;default_gene_vocab.json&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">vocab_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;No existing default vocab, will build one and save to </span><span class="si">{</span><span class="n">vocab_file</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">_build_default_gene_vocab</span><span class="p">(</span><span class="n">save_vocab_to</span><span class="o">=</span><span class="n">vocab_file</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading gene vocabulary from </span><span class="si">{</span><span class="n">vocab_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">GeneVocab</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">vocab_file</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_build_default_gene_vocab</span><span class="p">(</span>
+    <span class="n">download_source_to</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;/tmp&quot;</span><span class="p">,</span>
+    <span class="n">save_vocab_to</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Path</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GeneVocab</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Build the default gene vocabulary from HGNC gene symbols.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        download_source_to (str): Directory to download the source data.</span>
+<span class="sd">        save_vocab_to (Path or str): Path to save the vocabulary. If None,</span>
+<span class="sd">            the vocabulary will not be saved. Default to None.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gene_collection_file</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">download_source_to</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;human.gene_name_symbol.from_genenames.org.tsv&quot;</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">gene_collection_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="c1"># download and save file from url</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;https://www.genenames.org/cgi-bin/download/custom?col=gd_app_sym&amp;&quot;</span>
+            <span class="s2">&quot;col=md_ensembl_id&amp;status=Approved&amp;status=Entry%20Withdrawn&amp;hgnc_dbtag&quot;</span>
+            <span class="s2">&quot;=on&amp;order_by=gd_app_sym_sort&amp;format=text&amp;submit=submit&quot;</span>
+        <span class="p">)</span>
+        <span class="kn">import</span> <span class="nn">requests</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="n">gene_collection_file</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Building gene vocabulary from </span><span class="si">{</span><span class="n">gene_collection_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">gene_collection_file</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">gene_list</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Approved symbol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">gene_vocab</span> <span class="o">=</span> <span class="n">GeneVocab</span><span class="p">(</span><span class="n">gene_list</span><span class="p">)</span>  <span class="c1"># no special tokens set in default vocab</span>
+    <span class="k">if</span> <span class="n">save_vocab_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">gene_vocab</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">save_vocab_to</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">gene_vocab</span>
+
+
+<div class="viewcode-block" id="tokenize_batch"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.tokenize_batch">[docs]</a><span class="k">def</span> <span class="nf">tokenize_batch</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">gene_ids</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">return_pt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">append_cls</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_zero_gene</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cls_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="s2">&quot;&lt;cls&gt;&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tokenize a batch of data. Returns a list of tuple (gene_id, count).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (array-like): A batch of data, with shape (batch_size, n_features).</span>
+<span class="sd">            n_features equals the number of all genes.</span>
+<span class="sd">        gene_ids (array-like): A batch of gene ids, with shape (n_features,).</span>
+<span class="sd">        return_pt (bool): Whether to return torch tensors of gene_ids and counts,</span>
+<span class="sd">            default to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: A list of tuple (gene_id, count) of non zero gene expressions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Number of features in data (</span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">) does not match &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;number of gene_ids (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">)</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="p">)</span>
+    <span class="n">tokenized_data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">include_zero_gene</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">row</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">gene_ids</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">row</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">gene_ids</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">append_cls</span><span class="p">:</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">genes</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">cls_id</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_pt</span><span class="p">:</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">tokenized_data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">genes</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">tokenized_data</span></div>
+
+
+<div class="viewcode-block" id="pad_batch"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.pad_batch">[docs]</a><span class="k">def</span> <span class="nf">pad_batch</span><span class="p">(</span>
+    <span class="n">batch</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">],</span>
+    <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">vocab</span><span class="p">:</span> <span class="n">Vocab</span><span class="p">,</span>
+    <span class="n">pad_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span>
+    <span class="n">pad_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">cls_appended</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pad a batch of data. Returns a list of Dict[gene_id, count].</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        batch (list): A list of tuple (gene_id, count).</span>
+<span class="sd">        max_len (int): The maximum length of the batch.</span>
+<span class="sd">        vocab (Vocab): The vocabulary containing the pad token.</span>
+<span class="sd">        pad_token (str): The token to pad with.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Dict[str, torch.Tensor]: A dictionary of gene_id and count.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pad_id</span> <span class="o">=</span> <span class="n">vocab</span><span class="p">[</span><span class="n">pad_token</span><span class="p">]</span>
+    <span class="n">gene_ids_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">values_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch</span><span class="p">)):</span>
+        <span class="n">gene_ids</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_len</span><span class="p">:</span>
+            <span class="c1"># sample max_len genes</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">cls_appended</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">),</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">gene_ids</span> <span class="o">=</span> <span class="n">gene_ids</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_len</span><span class="p">:</span>
+            <span class="n">gene_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">gene_ids</span><span class="p">,</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                        <span class="p">(</span><span class="n">max_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">),),</span> <span class="n">pad_id</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gene_ids</span><span class="o">.</span><span class="n">dtype</span>
+                    <span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">values</span><span class="p">,</span>
+                    <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="n">max_len</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">),),</span> <span class="n">pad_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">values</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+        <span class="n">gene_ids_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gene_ids</span><span class="p">)</span>
+        <span class="n">values_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="n">batch_padded</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;genes&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">gene_ids_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+        <span class="s2">&quot;values&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">values_list</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">batch_padded</span></div>
+
+
+<div class="viewcode-block" id="tokenize_and_pad_batch"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.tokenize_and_pad_batch">[docs]</a><span class="k">def</span> <span class="nf">tokenize_and_pad_batch</span><span class="p">(</span>
+    <span class="n">data</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">gene_ids</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+    <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">vocab</span><span class="p">:</span> <span class="n">Vocab</span><span class="p">,</span>
+    <span class="n">pad_token</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">pad_value</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">append_cls</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">include_zero_gene</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">cls_token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&lt;cls&gt;&quot;</span><span class="p">,</span>
+    <span class="n">return_pt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tokenize and pad a batch of data. Returns a list of tuple (gene_id, count).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cls_id</span> <span class="o">=</span> <span class="n">vocab</span><span class="p">[</span><span class="n">cls_token</span><span class="p">]</span>
+    <span class="n">tokenized_data</span> <span class="o">=</span> <span class="n">tokenize_batch</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">,</span>
+        <span class="n">gene_ids</span><span class="p">,</span>
+        <span class="n">return_pt</span><span class="o">=</span><span class="n">return_pt</span><span class="p">,</span>
+        <span class="n">append_cls</span><span class="o">=</span><span class="n">append_cls</span><span class="p">,</span>
+        <span class="n">include_zero_gene</span><span class="o">=</span><span class="n">include_zero_gene</span><span class="p">,</span>
+        <span class="n">cls_id</span><span class="o">=</span><span class="n">cls_id</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">batch_padded</span> <span class="o">=</span> <span class="n">pad_batch</span><span class="p">(</span>
+        <span class="n">tokenized_data</span><span class="p">,</span> <span class="n">max_len</span><span class="p">,</span> <span class="n">vocab</span><span class="p">,</span> <span class="n">pad_token</span><span class="p">,</span> <span class="n">pad_value</span><span class="p">,</span> <span class="n">cls_appended</span><span class="o">=</span><span class="n">append_cls</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">batch_padded</span></div>
+
+
+<div class="viewcode-block" id="random_mask_value"><a class="viewcode-back" href="../../../scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.random_mask_value">[docs]</a><span class="k">def</span> <span class="nf">random_mask_value</span><span class="p">(</span>
+    <span class="n">values</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">mask_ratio</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span><span class="p">,</span>
+    <span class="n">mask_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">pad_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Randomly mask a batch of data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        values (array-like):</span>
+<span class="sd">            A batch of tokenized data, with shape (batch_size, n_features).</span>
+<span class="sd">        mask_ratio (float): The ratio of genes to mask, default to 0.15.</span>
+<span class="sd">        mask_value (int): The value to mask with, default to -1.</span>
+<span class="sd">        pad_value (int): The value of padding in the values, will be kept unchanged.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        torch.Tensor: A tensor of masked data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+        <span class="c1"># it is crutial to clone the tensor, otherwise it changes the original tensor</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">non_padding_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">(</span><span class="n">row</span> <span class="o">-</span> <span class="n">pad_value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n_mask</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">non_padding_idx</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask_ratio</span><span class="p">)</span>
+        <span class="n">mask_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">non_padding_idx</span><span class="p">,</span> <span class="n">n_mask</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">row</span><span class="p">[</span><span class="n">mask_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask_value</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, qiliu-ghddi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

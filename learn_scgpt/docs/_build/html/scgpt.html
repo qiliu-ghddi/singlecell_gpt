@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt package &mdash; learn_scgpt v0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scgpt.model package" href="scgpt.model.html" />
+    <link rel="prev" title="scgpt" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            learn_scgpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">scgpt</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scgpt package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html">scgpt.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html">scgpt.scbank package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html">scgpt.tokenizer package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.utils.html">scgpt.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scgpt-config-module">scgpt.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt.data_collator">scgpt.data_collator module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.data_collator.DataCollator"><code class="docutils literal notranslate"><span class="pre">DataCollator</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt.data_sampler">scgpt.data_sampler module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.data_sampler.SubsetSequentialSampler"><code class="docutils literal notranslate"><span class="pre">SubsetSequentialSampler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.data_sampler.SubsetsBatchSampler"><code class="docutils literal notranslate"><span class="pre">SubsetsBatchSampler</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt.logger">scgpt.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt.loss">scgpt.loss module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.loss.criterion_neg_log_bernoulli"><code class="docutils literal notranslate"><span class="pre">criterion_neg_log_bernoulli()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.loss.masked_mse_loss"><code class="docutils literal notranslate"><span class="pre">masked_mse_loss()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.loss.masked_relative_error"><code class="docutils literal notranslate"><span class="pre">masked_relative_error()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt.preprocess">scgpt.preprocess module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.preprocess.Preprocessor"><code class="docutils literal notranslate"><span class="pre">Preprocessor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.preprocess.binning"><code class="docutils literal notranslate"><span class="pre">binning()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt.trainer">scgpt.trainer module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.trainer.add_nums"><code class="docutils literal notranslate"><span class="pre">add_nums()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.trainer.divide_nums"><code class="docutils literal notranslate"><span class="pre">divide_nums()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.trainer.multiply_nums"><code class="docutils literal notranslate"><span class="pre">multiply_nums()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#scgpt.trainer.subtract_nums"><code class="docutils literal notranslate"><span class="pre">subtract_nums()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-scgpt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">learn_scgpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">scgpt</a></li>
+      <li class="breadcrumb-item active">scgpt package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scgpt.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scgpt-package">
+<h1>scgpt package<a class="headerlink" href="#scgpt-package" title="Permalink to this heading"></a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scgpt.model.html">scgpt.model package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.model.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.model.html#module-scgpt.model.dsbn">scgpt.model.dsbn module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.dsbn.DomainSpecificBatchNorm1d"><code class="docutils literal notranslate"><span class="pre">DomainSpecificBatchNorm1d</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.dsbn.DomainSpecificBatchNorm1d.bn_handle"><code class="docutils literal notranslate"><span class="pre">DomainSpecificBatchNorm1d.bn_handle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.dsbn.DomainSpecificBatchNorm1d.training"><code class="docutils literal notranslate"><span class="pre">DomainSpecificBatchNorm1d.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.dsbn.DomainSpecificBatchNorm2d"><code class="docutils literal notranslate"><span class="pre">DomainSpecificBatchNorm2d</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.dsbn.DomainSpecificBatchNorm2d.bn_handle"><code class="docutils literal notranslate"><span class="pre">DomainSpecificBatchNorm2d.bn_handle</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.dsbn.DomainSpecificBatchNorm2d.training"><code class="docutils literal notranslate"><span class="pre">DomainSpecificBatchNorm2d.training</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.model.html#module-scgpt.model.generation_model">scgpt.model.generation_model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.ClsDecoder"><code class="docutils literal notranslate"><span class="pre">ClsDecoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.ClsDecoder.forward"><code class="docutils literal notranslate"><span class="pre">ClsDecoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.ClsDecoder.training"><code class="docutils literal notranslate"><span class="pre">ClsDecoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.GeneEncoder"><code class="docutils literal notranslate"><span class="pre">GeneEncoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.GeneEncoder.forward"><code class="docutils literal notranslate"><span class="pre">GeneEncoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.GeneEncoder.training"><code class="docutils literal notranslate"><span class="pre">GeneEncoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.PositionalEncoding"><code class="docutils literal notranslate"><span class="pre">PositionalEncoding</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.PositionalEncoding.forward"><code class="docutils literal notranslate"><span class="pre">PositionalEncoding.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.PositionalEncoding.training"><code class="docutils literal notranslate"><span class="pre">PositionalEncoding.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.Similarity"><code class="docutils literal notranslate"><span class="pre">Similarity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.Similarity.forward"><code class="docutils literal notranslate"><span class="pre">Similarity.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.Similarity.training"><code class="docutils literal notranslate"><span class="pre">Similarity.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.TransformerGenerator"><code class="docutils literal notranslate"><span class="pre">TransformerGenerator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.TransformerGenerator.encode_batch"><code class="docutils literal notranslate"><span class="pre">TransformerGenerator.encode_batch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.TransformerGenerator.forward"><code class="docutils literal notranslate"><span class="pre">TransformerGenerator.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.TransformerGenerator.init_weights"><code class="docutils literal notranslate"><span class="pre">TransformerGenerator.init_weights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.TransformerGenerator.pred_perturb"><code class="docutils literal notranslate"><span class="pre">TransformerGenerator.pred_perturb()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.TransformerGenerator.training"><code class="docutils literal notranslate"><span class="pre">TransformerGenerator.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.generation_model.generate_square_subsequent_mask"><code class="docutils literal notranslate"><span class="pre">generate_square_subsequent_mask()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.model.html#module-scgpt.model.grad_reverse">scgpt.model.grad_reverse module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.grad_reverse.GradReverse"><code class="docutils literal notranslate"><span class="pre">GradReverse</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.grad_reverse.GradReverse.backward"><code class="docutils literal notranslate"><span class="pre">GradReverse.backward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.grad_reverse.GradReverse.forward"><code class="docutils literal notranslate"><span class="pre">GradReverse.forward()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.grad_reverse.grad_reverse"><code class="docutils literal notranslate"><span class="pre">grad_reverse()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.model.html#module-scgpt.model.model">scgpt.model.model module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.AdversarialDiscriminator"><code class="docutils literal notranslate"><span class="pre">AdversarialDiscriminator</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.AdversarialDiscriminator.forward"><code class="docutils literal notranslate"><span class="pre">AdversarialDiscriminator.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.AdversarialDiscriminator.training"><code class="docutils literal notranslate"><span class="pre">AdversarialDiscriminator.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.BatchLabelEncoder"><code class="docutils literal notranslate"><span class="pre">BatchLabelEncoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.BatchLabelEncoder.forward"><code class="docutils literal notranslate"><span class="pre">BatchLabelEncoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.BatchLabelEncoder.training"><code class="docutils literal notranslate"><span class="pre">BatchLabelEncoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.CategoryValueEncoder"><code class="docutils literal notranslate"><span class="pre">CategoryValueEncoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.CategoryValueEncoder.forward"><code class="docutils literal notranslate"><span class="pre">CategoryValueEncoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.CategoryValueEncoder.training"><code class="docutils literal notranslate"><span class="pre">CategoryValueEncoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ClsDecoder"><code class="docutils literal notranslate"><span class="pre">ClsDecoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ClsDecoder.forward"><code class="docutils literal notranslate"><span class="pre">ClsDecoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ClsDecoder.training"><code class="docutils literal notranslate"><span class="pre">ClsDecoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ContinuousValueEncoder"><code class="docutils literal notranslate"><span class="pre">ContinuousValueEncoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ContinuousValueEncoder.forward"><code class="docutils literal notranslate"><span class="pre">ContinuousValueEncoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ContinuousValueEncoder.training"><code class="docutils literal notranslate"><span class="pre">ContinuousValueEncoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ExprDecoder"><code class="docutils literal notranslate"><span class="pre">ExprDecoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ExprDecoder.forward"><code class="docutils literal notranslate"><span class="pre">ExprDecoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.ExprDecoder.training"><code class="docutils literal notranslate"><span class="pre">ExprDecoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FastTransformerEncoderWrapper"><code class="docutils literal notranslate"><span class="pre">FastTransformerEncoderWrapper</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FastTransformerEncoderWrapper.build_fast_transformer_encoder"><code class="docutils literal notranslate"><span class="pre">FastTransformerEncoderWrapper.build_fast_transformer_encoder()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FastTransformerEncoderWrapper.build_length_mask"><code class="docutils literal notranslate"><span class="pre">FastTransformerEncoderWrapper.build_length_mask()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FastTransformerEncoderWrapper.forward"><code class="docutils literal notranslate"><span class="pre">FastTransformerEncoderWrapper.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FastTransformerEncoderWrapper.training"><code class="docutils literal notranslate"><span class="pre">FastTransformerEncoderWrapper.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FlashTransformerEncoderLayer"><code class="docutils literal notranslate"><span class="pre">FlashTransformerEncoderLayer</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FlashTransformerEncoderLayer.forward"><code class="docutils literal notranslate"><span class="pre">FlashTransformerEncoderLayer.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.FlashTransformerEncoderLayer.training"><code class="docutils literal notranslate"><span class="pre">FlashTransformerEncoderLayer.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.GeneEncoder"><code class="docutils literal notranslate"><span class="pre">GeneEncoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.GeneEncoder.forward"><code class="docutils literal notranslate"><span class="pre">GeneEncoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.GeneEncoder.training"><code class="docutils literal notranslate"><span class="pre">GeneEncoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.MVCDecoder"><code class="docutils literal notranslate"><span class="pre">MVCDecoder</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.MVCDecoder.forward"><code class="docutils literal notranslate"><span class="pre">MVCDecoder.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.MVCDecoder.training"><code class="docutils literal notranslate"><span class="pre">MVCDecoder.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.PositionalEncoding"><code class="docutils literal notranslate"><span class="pre">PositionalEncoding</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.PositionalEncoding.forward"><code class="docutils literal notranslate"><span class="pre">PositionalEncoding.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.PositionalEncoding.training"><code class="docutils literal notranslate"><span class="pre">PositionalEncoding.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.Similarity"><code class="docutils literal notranslate"><span class="pre">Similarity</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.Similarity.forward"><code class="docutils literal notranslate"><span class="pre">Similarity.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.Similarity.training"><code class="docutils literal notranslate"><span class="pre">Similarity.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.TransformerModel"><code class="docutils literal notranslate"><span class="pre">TransformerModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.TransformerModel.encode_batch"><code class="docutils literal notranslate"><span class="pre">TransformerModel.encode_batch()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.TransformerModel.forward"><code class="docutils literal notranslate"><span class="pre">TransformerModel.forward()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.TransformerModel.generate"><code class="docutils literal notranslate"><span class="pre">TransformerModel.generate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.TransformerModel.init_weights"><code class="docutils literal notranslate"><span class="pre">TransformerModel.init_weights()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.TransformerModel.training"><code class="docutils literal notranslate"><span class="pre">TransformerModel.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html#scgpt.model.model.generate_square_subsequent_mask"><code class="docutils literal notranslate"><span class="pre">generate_square_subsequent_mask()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.model.html#module-scgpt.model">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scgpt.scbank.html">scgpt.scbank package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.scbank.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.scbank.html#module-scgpt.scbank.data">scgpt.scbank.data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.DataTable"><code class="docutils literal notranslate"><span class="pre">DataTable</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.DataTable.data"><code class="docutils literal notranslate"><span class="pre">DataTable.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.DataTable.is_loaded"><code class="docutils literal notranslate"><span class="pre">DataTable.is_loaded</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.DataTable.name"><code class="docutils literal notranslate"><span class="pre">DataTable.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.DataTable.save"><code class="docutils literal notranslate"><span class="pre">DataTable.save()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo"><code class="docutils literal notranslate"><span class="pre">MetaInfo</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.cell_ids"><code class="docutils literal notranslate"><span class="pre">MetaInfo.cell_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.from_path"><code class="docutils literal notranslate"><span class="pre">MetaInfo.from_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.gene_vocab_md5"><code class="docutils literal notranslate"><span class="pre">MetaInfo.gene_vocab_md5</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.load"><code class="docutils literal notranslate"><span class="pre">MetaInfo.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.main_table_key"><code class="docutils literal notranslate"><span class="pre">MetaInfo.main_table_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.on_disk_format"><code class="docutils literal notranslate"><span class="pre">MetaInfo.on_disk_format</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.on_disk_path"><code class="docutils literal notranslate"><span class="pre">MetaInfo.on_disk_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.save"><code class="docutils literal notranslate"><span class="pre">MetaInfo.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.data.MetaInfo.study_ids"><code class="docutils literal notranslate"><span class="pre">MetaInfo.study_ids</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.scbank.html#module-scgpt.scbank.databank">scgpt.scbank.databank module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank"><code class="docutils literal notranslate"><span class="pre">DataBank</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.append_study"><code class="docutils literal notranslate"><span class="pre">DataBank.append_study()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.batch_from_anndata"><code class="docutils literal notranslate"><span class="pre">DataBank.batch_from_anndata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.custom_filter"><code class="docutils literal notranslate"><span class="pre">DataBank.custom_filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.data_tables"><code class="docutils literal notranslate"><span class="pre">DataBank.data_tables</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.delete_study"><code class="docutils literal notranslate"><span class="pre">DataBank.delete_study()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.filter"><code class="docutils literal notranslate"><span class="pre">DataBank.filter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.from_anndata"><code class="docutils literal notranslate"><span class="pre">DataBank.from_anndata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.from_path"><code class="docutils literal notranslate"><span class="pre">DataBank.from_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.gene_vocab"><code class="docutils literal notranslate"><span class="pre">DataBank.gene_vocab</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.link"><code class="docutils literal notranslate"><span class="pre">DataBank.link()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.load"><code class="docutils literal notranslate"><span class="pre">DataBank.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.load_all"><code class="docutils literal notranslate"><span class="pre">DataBank.load_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.load_anndata"><code class="docutils literal notranslate"><span class="pre">DataBank.load_anndata()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.load_table"><code class="docutils literal notranslate"><span class="pre">DataBank.load_table()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.main_data"><code class="docutils literal notranslate"><span class="pre">DataBank.main_data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.main_table_key"><code class="docutils literal notranslate"><span class="pre">DataBank.main_table_key</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.meta_info"><code class="docutils literal notranslate"><span class="pre">DataBank.meta_info</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.save"><code class="docutils literal notranslate"><span class="pre">DataBank.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.settings"><code class="docutils literal notranslate"><span class="pre">DataBank.settings</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.sync"><code class="docutils literal notranslate"><span class="pre">DataBank.sync()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.track"><code class="docutils literal notranslate"><span class="pre">DataBank.track()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.databank.DataBank.update_datatables"><code class="docutils literal notranslate"><span class="pre">DataBank.update_datatables()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.scbank.html#module-scgpt.scbank.monitor">scgpt.scbank.monitor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.scbank.html#module-scgpt.scbank.setting">scgpt.scbank.setting module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.setting.Setting"><code class="docutils literal notranslate"><span class="pre">Setting</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.setting.Setting.immediate_save"><code class="docutils literal notranslate"><span class="pre">Setting.immediate_save</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.setting.Setting.max_tokenize_batch_size"><code class="docutils literal notranslate"><span class="pre">Setting.max_tokenize_batch_size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html#scgpt.scbank.setting.Setting.remove_zero_rows"><code class="docutils literal notranslate"><span class="pre">Setting.remove_zero_rows</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.scbank.html#module-scgpt.scbank">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scgpt.tokenizer.html">scgpt.tokenizer package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.tokenizer.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.tokenizer.html#module-scgpt.tokenizer.gene_tokenizer">scgpt.tokenizer.gene_tokenizer module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneTokenizer"><code class="docutils literal notranslate"><span class="pre">GeneTokenizer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab"><code class="docutils literal notranslate"><span class="pre">GeneVocab</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.from_dict"><code class="docutils literal notranslate"><span class="pre">GeneVocab.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.from_file"><code class="docutils literal notranslate"><span class="pre">GeneVocab.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.pad_token"><code class="docutils literal notranslate"><span class="pre">GeneVocab.pad_token</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.save_json"><code class="docutils literal notranslate"><span class="pre">GeneVocab.save_json()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.set_default_token"><code class="docutils literal notranslate"><span class="pre">GeneVocab.set_default_token()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.GeneVocab.training"><code class="docutils literal notranslate"><span class="pre">GeneVocab.training</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.get_default_gene_vocab"><code class="docutils literal notranslate"><span class="pre">get_default_gene_vocab()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.pad_batch"><code class="docutils literal notranslate"><span class="pre">pad_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.random_mask_value"><code class="docutils literal notranslate"><span class="pre">random_mask_value()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.tokenize_and_pad_batch"><code class="docutils literal notranslate"><span class="pre">tokenize_and_pad_batch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html#scgpt.tokenizer.gene_tokenizer.tokenize_batch"><code class="docutils literal notranslate"><span class="pre">tokenize_batch()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.tokenizer.html#module-scgpt.tokenizer">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scgpt.utils.html">scgpt.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.utils.html#module-scgpt.utils.util">scgpt.utils.util module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.MainProcessOnly"><code class="docutils literal notranslate"><span class="pre">MainProcessOnly</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.add_file_handler"><code class="docutils literal notranslate"><span class="pre">add_file_handler()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.category_str2int"><code class="docutils literal notranslate"><span class="pre">category_str2int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.eval_scib_metrics"><code class="docutils literal notranslate"><span class="pre">eval_scib_metrics()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.find_required_colums"><code class="docutils literal notranslate"><span class="pre">find_required_colums()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.gene_vocabulary"><code class="docutils literal notranslate"><span class="pre">gene_vocabulary()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.get_free_gpu"><code class="docutils literal notranslate"><span class="pre">get_free_gpu()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.histogram"><code class="docutils literal notranslate"><span class="pre">histogram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.isnotebook"><code class="docutils literal notranslate"><span class="pre">isnotebook()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.main_process_only"><code class="docutils literal notranslate"><span class="pre">main_process_only()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.set_seed"><code class="docutils literal notranslate"><span class="pre">set_seed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html#scgpt.utils.util.tensorlist2tensor"><code class="docutils literal notranslate"><span class="pre">tensorlist2tensor()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.utils.html#module-scgpt.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="scgpt-config-module">
+<h2>scgpt.config module<a class="headerlink" href="#scgpt-config-module" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-scgpt.data_collator">
+<span id="scgpt-data-collator-module"></span><h2>scgpt.data_collator module<a class="headerlink" href="#module-scgpt.data_collator" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.data_collator.</span></span><span class="sig-name descname"><span class="pre">DataCollator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">do_padding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_token_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_mlm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_binning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlm_probability</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_first_n_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/data_collator.html#DataCollator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.data_collator.DataCollator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Data collator for the mask value learning task. It pads the sequences to
+the maximum length in the batch and masks the gene expression values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>do_padding</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – whether to pad the sequences to the max length.</p></li>
+<li><p><strong>pad_token_id</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – the token id to use for padding.
+This is required if do_padding is True.</p></li>
+<li><p><strong>pad_value</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – the value to use for padding the expression
+values to the max length.</p></li>
+<li><p><strong>do_mlm</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – whether to do masking with MLM.</p></li>
+<li><p><strong>do_binning</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – whether to bin the expression values.</p></li>
+<li><p><strong>mlm_probability</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>) – the probability of masking with MLM.</p></li>
+<li><p><strong>mask_value</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – the value to fill at the expression postions
+that are masked.</p></li>
+<li><p><strong>max_length</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>, optional) – the maximum length of the sequences.
+This is required if do_padding is True.</p></li>
+<li><p><strong>sampling</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">bool</span></code>) – whether to do sampling instead of truncation if
+length &gt; max_length.</p></li>
+<li><p><strong>keep_first_n_tokens</strong> (<code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>) – the number of tokens in the beginning
+of the sequence to keep unchanged from sampling. This is useful when
+special tokens have been added to the beginning of the sequence.
+Default to 1.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.do_binning">
+<span class="sig-name descname"><span class="pre">do_binning</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.do_binning" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.do_mlm">
+<span class="sig-name descname"><span class="pre">do_mlm</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.do_mlm" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.do_padding">
+<span class="sig-name descname"><span class="pre">do_padding</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.do_padding" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.keep_first_n_tokens">
+<span class="sig-name descname"><span class="pre">keep_first_n_tokens</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.keep_first_n_tokens" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.mask_value">
+<span class="sig-name descname"><span class="pre">mask_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">-1</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.mask_value" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.max_length">
+<span class="sig-name descname"><span class="pre">max_length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.max_length" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.mlm_probability">
+<span class="sig-name descname"><span class="pre">mlm_probability</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.15</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.mlm_probability" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.pad_token_id">
+<span class="sig-name descname"><span class="pre">pad_token_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.pad_token_id" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.pad_value">
+<span class="sig-name descname"><span class="pre">pad_value</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.pad_value" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scgpt.data_collator.DataCollator.sampling">
+<span class="sig-name descname"><span class="pre">sampling</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#scgpt.data_collator.DataCollator.sampling" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-scgpt.data_sampler">
+<span id="scgpt-data-sampler-module"></span><h2>scgpt.data_sampler module<a class="headerlink" href="#module-scgpt.data_sampler" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.data_sampler.SubsetSequentialSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.data_sampler.</span></span><span class="sig-name descname"><span class="pre">SubsetSequentialSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/data_sampler.html#SubsetSequentialSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.data_sampler.SubsetSequentialSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></p>
+<p>Samples elements sequentially from a given list of indices, without replacement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>indices</strong> (<em>sequence</em>) – a sequence of indices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.data_sampler.SubsetsBatchSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.data_sampler.</span></span><span class="sig-name descname"><span class="pre">SubsetsBatchSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">subsets</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intra_subset_shuffle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inter_subset_shuffle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">drop_last</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/data_sampler.html#SubsetsBatchSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.data_sampler.SubsetsBatchSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</p>
+<p>Samples batches of indices from a list of subsets of indices. Each subset
+of indices represents a data subset and is sampled without replacement randomly
+or sequentially. Specially, each batch only contains indices from a single subset.
+This sampler is for the scenario where samples need to be drawn from multiple
+subsets separately.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>subsets</strong> (<em>List</em><em>[</em><em>Sequence</em><em>[</em><em>int</em><em>]</em><em>]</em>) – A list of subsets of indices.</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – Size of mini-batch.</p></li>
+<li><p><strong>intra_subset_shuffle</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the sampler will shuffle the indices
+within each subset.</p></li>
+<li><p><strong>inter_subset_shuffle</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the sampler will shuffle the order
+of subsets.</p></li>
+<li><p><strong>drop_last</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the sampler will drop the last batch if
+its size would be less than <code class="docutils literal notranslate"><span class="pre">batch_size</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-scgpt.logger">
+<span id="scgpt-logger-module"></span><h2>scgpt.logger module<a class="headerlink" href="#module-scgpt.logger" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-scgpt.loss">
+<span id="scgpt-loss-module"></span><h2>scgpt.loss module<a class="headerlink" href="#module-scgpt.loss" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.loss.criterion_neg_log_bernoulli">
+<span class="sig-prename descclassname"><span class="pre">scgpt.loss.</span></span><span class="sig-name descname"><span class="pre">criterion_neg_log_bernoulli</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/scgpt/loss.html#criterion_neg_log_bernoulli"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.loss.criterion_neg_log_bernoulli" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the negative log-likelihood of Bernoulli distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – _description_</p></li>
+<li><p><strong>target</strong> – _description_</p></li>
+<li><p><strong>mask</strong> – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.loss.masked_mse_loss">
+<span class="sig-prename descclassname"><span class="pre">scgpt.loss.</span></span><span class="sig-name descname"><span class="pre">masked_mse_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/scgpt/loss.html#masked_mse_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.loss.masked_mse_loss" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the masked MSE loss between input and target.
+_summary_</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>torch.Tensor</em>) – _description_</p></li>
+<li><p><strong>target</strong> (<em>torch.Tensor</em>) – _description_</p></li>
+<li><p><strong>mask</strong> (<em>torch.Tensor</em>) – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.loss.masked_relative_error">
+<span class="sig-prename descclassname"><span class="pre">scgpt.loss.</span></span><span class="sig-name descname"><span class="pre">masked_relative_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/scgpt/loss.html#masked_relative_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.loss.masked_relative_error" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the masked relative error between input and target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> – _description_</p></li>
+<li><p><strong>target</strong> – _description_</p></li>
+<li><p><strong>mask</strong> – _description_</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>_description_</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-scgpt.preprocess">
+<span id="scgpt-preprocess-module"></span><h2>scgpt.preprocess module<a class="headerlink" href="#module-scgpt.preprocess" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.preprocess.Preprocessor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.preprocess.</span></span><span class="sig-name descname"><span class="pre">Preprocessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">use_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_gene_by_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_cell_by_counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize_total</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_normed_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'X_normed'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log1p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_log1p_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'X_log1p'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset_hvg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hvg_use_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hvg_flavor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'seurat_v3'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result_binned_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'X_binned'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/preprocess.html#Preprocessor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.preprocess.Preprocessor" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Prepare data into training, valid and test split. Normalize raw expression
+values, binning or using other transform into the preset model input format.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.preprocess.Preprocessor.check_logged">
+<span class="sig-name descname"><span class="pre">check_logged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/scgpt/preprocess.html#Preprocessor.check_logged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.preprocess.Preprocessor.check_logged" title="Permalink to this definition"></a></dt>
+<dd><p>Check if the data is already log1p transformed.</p>
+<p>Args:</p>
+<dl class="simple">
+<dt>adata (<code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code>):</dt><dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code> object to preprocess.</p>
+</dd>
+<dt>obs_key (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, optional):</dt><dd><p>The key of <code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData.obs</span></code> to use for batch information. This arg
+is used in the highly variable gene selection step.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.preprocess.binning">
+<span class="sig-prename descclassname"><span class="pre">scgpt.preprocess.</span></span><span class="sig-name descname"><span class="pre">binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/scgpt/preprocess.html#binning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.preprocess.binning" title="Permalink to this definition"></a></dt>
+<dd><p>Binning the row into n_bins.</p>
+</dd></dl>
+
+</section>
+<section id="module-scgpt.trainer">
+<span id="scgpt-trainer-module"></span><h2>scgpt.trainer module<a class="headerlink" href="#module-scgpt.trainer" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.trainer.add_nums">
+<span class="sig-prename descclassname"><span class="pre">scgpt.trainer.</span></span><span class="sig-name descname"><span class="pre">add_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/trainer.html#add_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.trainer.add_nums" title="Permalink to this definition"></a></dt>
+<dd><p>This method will be used to add two numbers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num1</strong> (<em>int</em>) – The first number</p></li>
+<li><p><strong>num2</strong> (<em>int</em>) – The second number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The sum of two numbers</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.trainer.divide_nums">
+<span class="sig-prename descclassname"><span class="pre">scgpt.trainer.</span></span><span class="sig-name descname"><span class="pre">divide_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/trainer.html#divide_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.trainer.divide_nums" title="Permalink to this definition"></a></dt>
+<dd><p>This method will be used to divide num1 by num2</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num1</strong> (<em>int</em>) – The first number</p></li>
+<li><p><strong>num2</strong> (<em>int</em>) – The second number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The answer</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.trainer.multiply_nums">
+<span class="sig-prename descclassname"><span class="pre">scgpt.trainer.</span></span><span class="sig-name descname"><span class="pre">multiply_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/trainer.html#multiply_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.trainer.multiply_nums" title="Permalink to this definition"></a></dt>
+<dd><p>This method will be used to multiply two numbers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num1</strong> (<em>int</em>) – The first number</p></li>
+<li><p><strong>num2</strong> (<em>int</em>) – The second number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The product of two numbers</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.trainer.subtract_nums">
+<span class="sig-prename descclassname"><span class="pre">scgpt.trainer.</span></span><span class="sig-name descname"><span class="pre">subtract_nums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/trainer.html#subtract_nums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.trainer.subtract_nums" title="Permalink to this definition"></a></dt>
+<dd><p>This method will be used to subtract num2 from num1</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num1</strong> (<em>int</em>) – The first number</p></li>
+<li><p><strong>num2</strong> (<em>int</em>) – The second number</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The answer</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-scgpt">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scgpt" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="scgpt" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scgpt.model.html" class="btn btn-neutral float-right" title="scgpt.model package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, qiliu-ghddi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

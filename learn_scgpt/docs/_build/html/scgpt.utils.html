@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.utils package &mdash; learn_scgpt v0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="scgpt.tokenizer package" href="scgpt.tokenizer.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            learn_scgpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">scgpt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scgpt.html">scgpt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="scgpt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="scgpt.model.html">scgpt.model package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.scbank.html">scgpt.scbank package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="scgpt.tokenizer.html">scgpt.tokenizer package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">scgpt.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#scgpt-config-module">scgpt.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.data_collator">scgpt.data_collator module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.data_sampler">scgpt.data_sampler module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.logger">scgpt.logger module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.loss">scgpt.loss module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.preprocess">scgpt.preprocess module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt.trainer">scgpt.trainer module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.html#module-scgpt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">learn_scgpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">scgpt</a></li>
+          <li class="breadcrumb-item"><a href="scgpt.html">scgpt package</a></li>
+      <li class="breadcrumb-item active">scgpt.utils package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scgpt.utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scgpt-utils-package">
+<h1>scgpt.utils package<a class="headerlink" href="#scgpt-utils-package" title="Permalink to this heading"></a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading"></a></h2>
+</section>
+<section id="module-scgpt.utils.util">
+<span id="scgpt-utils-util-module"></span><h2>scgpt.utils.util module<a class="headerlink" href="#module-scgpt.utils.util" title="Permalink to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.utils.util.MainProcessOnly">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">MainProcessOnly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#MainProcessOnly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.MainProcessOnly" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.add_file_handler">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">add_file_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Logger</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_file_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#add_file_handler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.add_file_handler" title="Permalink to this definition"></a></dt>
+<dd><p>Add a file handler to the logger.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.category_str2int">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">category_str2int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">category_strs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/utils/util.html#category_str2int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.category_str2int" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.eval_scib_metrics">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">eval_scib_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'str_batch'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'celltype'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span></span></span><a class="reference internal" href="_modules/scgpt/utils/util.html#eval_scib_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.eval_scib_metrics" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.find_required_colums">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">find_required_colums</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">AnnData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configs_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/scgpt/utils/util.html#find_required_colums"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.find_required_colums" title="Permalink to this definition"></a></dt>
+<dd><p>Find the required columns in AnnData, including celltype column, str_celltype
+column, the gene name column, and the experimental batch key.</p>
+<p>This function asks the user to input the required column names if the first
+time loading the data. The names are saved in the config file and will be
+automatically loaded next time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adata</strong> (<em>AnnData</em>) – The AnnData object.</p></li>
+<li><p><strong>id</strong> (<em>str</em>) – The id of the AnnData object, will be used as the file name for
+saving the config file.</p></li>
+<li><p><strong>configs_dir</strong> (<em>Union</em><em>[</em><em>str</em><em>, </em><em>Path</em><em>]</em>) – The directory of saved config files.</p></li>
+<li><p><strong>update</strong> (<em>bool</em>) – Whether to update the config file.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>The required columns, including celltype_col, str_celltype_col,</dt><dd><p>gene_col, and batch_col.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[Optional[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.gene_vocabulary">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">gene_vocabulary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#gene_vocabulary"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.gene_vocabulary" title="Permalink to this definition"></a></dt>
+<dd><p>Generate the gene name2id and id2name dictionaries.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.get_free_gpu">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">get_free_gpu</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#get_free_gpu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.get_free_gpu" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.histogram">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['train',</span> <span class="pre">'valid']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">['blue',</span> <span class="pre">'red']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">(9,</span> <span class="pre">4)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Axes</span></span></span><a class="reference internal" href="_modules/scgpt/utils/util.html#histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.histogram" title="Permalink to this definition"></a></dt>
+<dd><p>Plot histogram of the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>List</em><em>[</em><em>np.ndarray</em><em>]</em>) – The data to plot.</p></li>
+<li><p><strong>label</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The label of the data.</p></li>
+<li><p><strong>color</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – The color of the data.</p></li>
+<li><p><strong>figsize</strong> (<em>Tuple</em><em>[</em><em>int</em><em>, </em><em>int</em><em>]</em>) – The size of the figure.</p></li>
+<li><p><strong>title</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The title of the figure.</p></li>
+<li><p><strong>show</strong> (<em>bool</em>) – Whether to show the figure.</p></li>
+<li><p><strong>save</strong> (<em>Optional</em><em>[</em><em>str</em><em>]</em>) – The path to save the figure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The axes of the figure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>axes.Axes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.isnotebook">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">isnotebook</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/scgpt/utils/util.html#isnotebook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.isnotebook" title="Permalink to this definition"></a></dt>
+<dd><p>check whether excuting in jupyter notebook.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.main_process_only">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">main_process_only</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#main_process_only"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.main_process_only" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.set_seed">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">set_seed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#set_seed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.set_seed" title="Permalink to this definition"></a></dt>
+<dd><p>set random seed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="scgpt.utils.util.tensorlist2tensor">
+<span class="sig-prename descclassname"><span class="pre">scgpt.utils.util.</span></span><span class="sig-name descname"><span class="pre">tensorlist2tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tensorlist</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scgpt/utils/util.html#tensorlist2tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scgpt.utils.util.tensorlist2tensor" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-scgpt.utils">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scgpt.utils" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scgpt.tokenizer.html" class="btn btn-neutral float-left" title="scgpt.tokenizer package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, qiliu-ghddi.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
