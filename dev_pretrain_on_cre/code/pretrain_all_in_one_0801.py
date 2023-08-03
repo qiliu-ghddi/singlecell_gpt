@@ -29,7 +29,7 @@ from sklearn.model_selection import train_test_split
 from torchtext.vocab import Vocab
 from torchtext._torchtext import Vocab as VocabPybind
 
-# sys.path.insert(0, "../")
+sys.path.insert(0, "../")
 from scgpt.utils import set_seed
 from scgpt.utils import category_str2int, eval_scib_metrics
 from scgpt import SubsetsBatchSampler
@@ -48,7 +48,6 @@ from config import hyperparameter_defaults
 sc.set_figure_params(figsize=(4, 4))
 os.environ["KMP_WARNINGS"] = "off"
 warnings.filterwarnings("ignore")
-
 
 
 ## Step 2: Load and pre-process data
@@ -95,6 +94,20 @@ def load_pbmc10k(
     return adata
 
 
+def load_tokenized(
+    dataset_name="cre329_tokenized_merged_numds10",
+    file_path="dev_pretrain_on_cre_all_in_one/data/cre329_tokenized_merged/cre329_tokenized_merged_numds10.pt",
+    valid_size=0.03
+):
+    if dataset_name == "cre329_tokenized_merged_numds10":
+        tokenized_data = torch.load(file_path)
+        tokenized_train, tokenized_valid = train_test_split(tokenized_data, test_size=valid_size)
+        print(f"valid_size: {valid_size}")
+        print(f"tokenized_train: {tokenized_train.shape}")
+        print(f"tokenized_valid: {tokenized_valid.shape}")
+        return tokenized_train, tokenized_valid
+    else:
+        return None, None
 
 def load_dataset(
     dataset_name,
@@ -105,93 +118,60 @@ def load_dataset(
     return adata 
 
 
-# def __prepare_data(adata):
-#     # 2.4 Tokenize the input data for model fine-tuning
-#     input_layer_key = "X_binned"
-#     if issparse(adata.layers[input_layer_key]):
-#         all_counts = adata.layers[input_layer_key].A
-#     else:
-#         all_counts = adata.layers[input_layer_key]
-#     genes = adata.var["gene_name"].tolist()
-#     # if config.load_model is None:
-#     # bidirectional lookup [gene <-> int]
-#     vocab = Vocab(VocabPybind(genes + special_tokens, None))
-#     vocab.set_default_index(vocab["<pad>"])
-#     gene_ids = np.array(vocab(genes), dtype=int)
-
-
-#     celltypes_labels = adata.obs["celltype"].tolist()  # make sure count from 0
-#     num_types = len(set(celltypes_labels))
-#     celltypes_labels = np.array(celltypes_labels)
-
-#     batch_ids = adata.obs["batch_id"].tolist()
-#     num_batch_types = len(set(batch_ids))
-#     batch_ids = np.array(batch_ids)
-
-#     (
-#         train_data,
-#         valid_data,
-#         train_celltype_labels,
-#         valid_celltype_labels,
-#         train_batch_labels,
-#         valid_batch_labels,
-#     ) = train_test_split(
-#         all_counts, celltypes_labels, batch_ids, test_size=0.1, shuffle=True
-#     )    
-
-
 def prepare_data(
-    adata,
-    vocab,
-    sort_seq_batch=False
+    tokenized_train,
+    tokenized_valid,
+    mask_ratio,
+    mask_value,
+    pad_value
     ) -> Tuple[Dict[str, torch.Tensor]]:
-    # 2.4 Tokenize the input data for model fine-tuning
-    input_layer_key = "X_binned"
-    if issparse(adata.layers[input_layer_key]):
-        all_counts = adata.layers[input_layer_key].A
-    else:
-        all_counts = adata.layers[input_layer_key]
+    # # 2.4 Tokenize the input data for model fine-tuning
+    # input_layer_key = "X_binned"
+    # if issparse(adata.layers[input_layer_key]):
+    #     all_counts = adata.layers[input_layer_key].A
+    # else:
+    #     all_counts = adata.layers[input_layer_key]
     
-    genes = adata.var["gene_name"].tolist()
-    if vocab is None:
-        # if config.load_model is None:
-        # bidirectional lookup [gene <-> int]
-        vocab = Vocab(VocabPybind(genes + special_tokens, None))
-        vocab.set_default_index(vocab["<pad>"])
+    # genes = adata.var["gene_name"].tolist()
+    # if vocab is None:
+    #     # if config.load_model is None:
+    #     # bidirectional lookup [gene <-> int]
+    #     vocab = Vocab(VocabPybind(genes + special_tokens, None))
+    #     vocab.set_default_index(vocab["<pad>"])
     
-    # convert gene names to gene indices    
-    gene_ids = np.array(vocab(genes), dtype=int)
+    # # convert gene names to gene indices    
+    # gene_ids = np.array(vocab(genes), dtype=int)
     
-    train_data, valid_data = train_test_split(all_counts)
+    # train_data, valid_data = train_test_split(all_counts)
     
-    tokenized_train = tokenize_and_pad_batch(
-        train_data,
-        gene_ids,
-        max_len=max_seq_len,
-        vocab=vocab,
-        pad_token=pad_token,
-        pad_value=pad_value,
-        append_cls=True,  # append <cls> token at the beginning
-        include_zero_gene=True,
-    )
-    tokenized_valid = tokenize_and_pad_batch(
-        valid_data,
-        gene_ids,
-        max_len=max_seq_len,
-        vocab=vocab,
-        pad_token=pad_token,
-        pad_value=pad_value,
-        append_cls=True,
-        include_zero_gene=True,
-    )
-    logger.info(
-        f"train set number of samples: {tokenized_train['genes'].shape[0]}, "
-        f"\n\t feature length: {tokenized_train['genes'].shape[1]}"
-    )
-    logger.info(
-        f"valid set number of samples: {tokenized_valid['genes'].shape[0]}, "
-        f"\n\t feature length: {tokenized_valid['genes'].shape[1]}"
-    )
+    # tokenized_train = tokenize_and_pad_batch(
+    #     train_data,
+    #     gene_ids,
+    #     max_len=max_seq_len,
+    #     vocab=vocab,
+    #     pad_token=pad_token,
+    #     pad_value=pad_value,
+    #     append_cls=True,  # append <cls> token at the beginning
+    #     include_zero_gene=True,
+    # )
+    # tokenized_valid = tokenize_and_pad_batch(
+    #     valid_data,
+    #     gene_ids,
+    #     max_len=max_seq_len,
+    #     vocab=vocab,
+    #     pad_token=pad_token,
+    #     pad_value=pad_value,
+    #     append_cls=True,
+    #     include_zero_gene=True,
+    # )
+    # logger.info(
+    #     f"train set number of samples: {tokenized_train['genes'].shape[0]}, "
+    #     f"\n\t feature length: {tokenized_train['genes'].shape[1]}"
+    # )
+    # logger.info(
+    #     f"valid set number of samples: {tokenized_valid['genes'].shape[0]}, "
+    #     f"\n\t feature length: {tokenized_valid['genes'].shape[1]}"
+    # )
     
     masked_values_train = random_mask_value(
         tokenized_train["values"],
@@ -309,13 +289,18 @@ def prepare_dataloader(
 
 
 def train(
+    config,
     epoch,
-    model, 
+    model,
+    device,
     loader,
     criterion,
     optimizer,
     scaler,
-    scheduler
+    scheduler,
+    logger,
+    mask_value=-1,
+    explicit_zero_prob=False
     ) -> None:
     """
     Train the model for one epoch.
@@ -446,10 +431,13 @@ def define_wandb_metrcis():
 
 
 def evaluate(
+    config,
     epoch,
     model: nn.Module, 
+    device,
     loader: DataLoader,
     criterion,
+    mask_value=-1
     ) -> float:
     """
     Evaluate the model on the evaluation data.
@@ -510,6 +498,7 @@ def evaluate(
 
 
 def eval_testdata(
+    config,
     model: nn.Module,
     adata_t: AnnData,
     include_types: List[str] = ["cls"],
@@ -606,17 +595,76 @@ def eval_testdata(
         return results
 
 
+# global variables
+pad_token = "<pad>"
+special_tokens = [pad_token, "<cls>", "<eoc>"]
+vocab_file = "default_census_vocab.json"
+vocab = GeneVocab.from_file(vocab_file)
+for s in special_tokens:
+    if s not in vocab:
+        vocab.append_token(s)  
+ntokens = len(vocab)  # size of vocabulary, 60694
+# device = torch.device("cuda:7" if torch.cuda.is_available() else "cpu")
+
+
 def main(config):
+    # dataset_name = config['dataset_name']
+    # adata = load_dataset(dataset_name)
+
+    # logging
     dataset_name = config['dataset_name']
-    adata = load_dataset(dataset_name)
+    save_dir = Path(f"./save/dev_{dataset_name}-{time.strftime('%b%d-%H-%M')}/")
+    save_dir.mkdir(parents=True, exist_ok=True)
+    logger = scg.logger
+    scg.utils.add_file_handler(logger, save_dir/"run.log")
+
+    run = wandb.init(
+        config=config,
+        project="Pretraining scGPT",
+        reinit=True,
+        settings=wandb.Settings(start_method="fork"),
+    )
+    config = wandb.config
+    set_seed(config.seed)
+    print(config)
+    print("="*100)
     
-    if config.load_model is None:
-        genes = adata.var["gene_name"].tolist()
-        vocab = Vocab(
-            VocabPybind(genes + special_tokens, None)
-        )
-        
-    ntokens = len(vocab)  # size of vocabulary, 60694
+
+    n_hvg = None
+    max_seq_len = 1201    
+    tokenized_train, tokenized_valid = load_tokenized(
+        dataset_name="cre329_tokenized_merged_numds10",
+        file_path="../data/cre329_tokenized_merged/cre329_tokenized_merged_numds10.pt",
+        valid_size=0.03
+    )
+    
+    # if config.load_model is None:
+    #     genes = adata.var["gene_name"].tolist()
+    #     vocab = Vocab(
+    #         VocabPybind(genes + special_tokens, None)
+    #     )
+
+    embsize = config['layer_size']
+    d_hid = config['layer_size']
+    nhead = config['nhead']
+    nlayers = config['nlayers']
+    batch_size = config['batch_size']
+    dropout = config['dropout']
+    pre_norm = config['pre_norm']
+    ecs_thres = config['ecs_thres']
+    
+    mask_ratio = config['mask_ratio']
+    mask_value = -1
+    pad_value = -2
+    n_input_bins = config['n_bins']    
+    # DSBN = False
+    # GEPC = False
+    # do_dab = False
+    # use_batch_labels = False
+    # num_batch_types = None
+
+    # per_seq_batch_sample = False
+    # explicit_zero_prob = False  # whether explicit bernoulli for zeros    
     model = TransformerModel(
         ntokens,
         embsize,
@@ -688,9 +736,8 @@ def main(config):
         epoch_start_time = time.time()
         
         train_data_pt, valid_data_pt = prepare_data(
-            adata,
-            vocab,
-            sort_seq_batch=False
+            tokenized_train,
+            tokenized_valid
         )
         
         train_loader = prepare_dataloader(
@@ -709,7 +756,7 @@ def main(config):
         )
         
         logger.info("===")
-        if do_train:
+        if config.do_train:
             logger.info("config.do_train")
             # training one epoch
             train(
@@ -786,167 +833,134 @@ def main(config):
     run.log_artifact(artifact)
     
     
-if __name__=="__main__":
-    pad_token = "<pad>"
-    special_tokens = [pad_token, "<cls>", "<eoc>"]
-    dataset_name = "PBMC_10K"
-    save_dir = Path(f"./save/dev_{dataset_name}-{time.strftime('%b%d-%H-%M')}/")
-    save_dir.mkdir(parents=True, exist_ok=True)
-    logger = scg.logger
-    scg.utils.add_file_handler(logger, save_dir / "run.log")
-
-    ## Step1: Specify hyper-parameter setup for integration task
-    do_train = True
-    if do_train:
-        config = {
-            'seed': 42,
-            'dataset_name': "PBMC_10K",
-            'do_train': True,
-            'load_model': None,
+# if __name__=="__main__":
+#     ## Step1: Specify hyper-parameter setup for integration task
+#     do_train = True
+#     if do_train:
+#         config = {
+#             'seed': 42,
+#             'dataset_name': "PBMC_10K",
+#             'do_train': True,
+#             'load_model': None,
             
-            'layer_size': 128,
-            'nhead': 4,
-            'nlayers': 4,
+#             'layer_size': 128,
+#             'nhead': 4,
+#             'nlayers': 4,
             
-            'n_hvg': None,
-            'max_seq_len': 1200,
+#             'n_hvg': None,
+#             'max_seq_len': 1200,
             
-            'fast_transformer': False,
-            'pre_norm': False,
-            'ecs_thres': 0.8,
+#             'fast_transformer': False,
+#             'pre_norm': False,
+#             'ecs_thres': 0.8,
             
-            'GEPC': False,
-            'DSBN': False,
+#             'GEPC': False,
+#             'DSBN': False,
             
-            'batch_size': 32,
-            'epochs': 6,
-            'lr': 1e-4,
-            "dropout": 0.2,
+#             'batch_size': 32,
+#             'epochs': 6,
+#             'lr': 1e-4,
+#             "dropout": 0.2,
             
-            'n_bins': 51,
-            'mask_ratio': 0.4,
+#             'n_bins': 51,
+#             'mask_ratio': 0.4,
             
-            'amp': False,
-            'schedule_ratio': 0.9,
-            'save_eval_interval': 5,
-            'log_interval': 100,
-        }
-        embsize = config['layer_size']
-        d_hid = config['layer_size']
-        nhead = config['nhead']
-        nlayers = config['nlayers']
+#             'amp': False,
+#             'schedule_ratio': 0.9,
+#             'save_eval_interval': 5,
+#             'log_interval': 100,
+#         }
+#         embsize = config['layer_size']
+#         d_hid = config['layer_size']
+#         nhead = config['nhead']
+#         nlayers = config['nlayers']
         
-        batch_size = config['batch_size']
-        dropout = config['dropout']
-        pre_norm = config['pre_norm']
-        ecs_thres = config['ecs_thres']
+#         batch_size = config['batch_size']
+#         dropout = config['dropout']
+#         pre_norm = config['pre_norm']
+#         ecs_thres = config['ecs_thres']
         
-        n_hvg = None
-        max_seq_len = 1200
+#         n_hvg = None
+#         max_seq_len = 1201
         
-        DSBN = False
-        GEPC = False
-        do_dab = False
-        use_batch_labels = False
-        num_batch_types = None
+#         DSBN = False
+#         GEPC = False
+#         do_dab = False
+#         use_batch_labels = False
+#         num_batch_types = None
         
-        per_seq_batch_sample = False
-        explicit_zero_prob = True  # whether explicit bernoulli for zeros
-    else:
-        config = {
-            'seed': 42,
-            'dataset_name': "PBMC_10K",
-            'do_train': True,
-            'load_model': "./save/scGPT_human",
-            'GEPC': True,
-            'ecs_thres': 0.8,
-            'dab_weight': 1.0,
-            'mask_ratio': 0.4,
-            'epochs': 15,
-            'n_bins': 51,
-            'lr': 1e-4,
-            'batch_size': 16,
+#         per_seq_batch_sample = False
+#         explicit_zero_prob = False  # whether explicit bernoulli for zeros
+#     else:
+#         config = {
+#             'seed': 42,
+#             'dataset_name': "PBMC_10K",
+#             'do_train': True,
+#             'load_model': "./save/scGPT_human",
+#             'GEPC': True,
+#             'ecs_thres': 0.8,
+#             'dab_weight': 1.0,
+#             'mask_ratio': 0.4,
+#             'epochs': 15,
+#             'n_bins': 51,
+#             'lr': 1e-4,
+#             'batch_size': 16,
             
-            'layer_size': 128,
-            'nlayers': 4,
-            'nhead': 4,
+#             'layer_size': 128,
+#             'nlayers': 4,
+#             'nhead': 4,
             
-            'dropout': 0.2,
-            'schedule_ratio': 0.9,
-            'save_eval_interval': 5,
-            'log_interval': 100,
+#             'dropout': 0.2,
+#             'schedule_ratio': 0.9,
+#             'save_eval_interval': 5,
+#             'log_interval': 100,
             
-            'fast_transformer': False,
-            'pre_norm': False,
-            'amp': True,
-        }
+#             'fast_transformer': False,
+#             'pre_norm': False,
+#             'amp': True,
+#         }
+#         n_hvg = 1200  # number of highly variable genes
+#         max_seq_len = n_hvg + 1
     
-    n_hvg = 1200  # number of highly variable genes
-    max_seq_len = n_hvg + 1
+#     # checkpoint
+#     if config['load_model']:
+#         model_dir = Path(config['load_model'])
+#         model_config_file = model_dir / "args.json"
+#         model_file = model_dir / "best_model.pt"
+#         vocab_file = model_dir / "vocab.json"
 
-    if config['load_model']:
-        model_dir = Path(config['load_model'])
-        model_config_file = model_dir / "args.json"
-        model_file = model_dir / "best_model.pt"
-        vocab_file = model_dir / "vocab.json"
+#         # vocab = GeneVocab.from_file(vocab_file)
+#         # for s in special_tokens:
+#         #     if s not in vocab:
+#         #         vocab.append_token(s)
 
-        # vocab = GeneVocab.from_file(vocab_file)
-        # for s in special_tokens:
-        #     if s not in vocab:
-        #         vocab.append_token(s)
-
-        # adata.var["id_in_vocab"] = [
-        #     1 if gene in vocab else -1 for gene in adata.var["gene_name"]
-        # ]
-        # gene_ids_in_vocab = np.array(adata.var["id_in_vocab"])
-        # logger.info(
-        #     f"match {np.sum(gene_ids_in_vocab >= 0)}/{len(gene_ids_in_vocab)} genes "
-        #     f"in vocabulary of size {len(vocab)}."
-        # )
-        # adata = adata[:, adata.var["id_in_vocab"] >= 0]
+#         # adata.var["id_in_vocab"] = [
+#         #     1 if gene in vocab else -1 for gene in adata.var["gene_name"]
+#         # ]
+#         # gene_ids_in_vocab = np.array(adata.var["id_in_vocab"])
+#         # logger.info(
+#         #     f"match {np.sum(gene_ids_in_vocab >= 0)}/{len(gene_ids_in_vocab)} genes "
+#         #     f"in vocabulary of size {len(vocab)}."
+#         # )
+#         # adata = adata[:, adata.var["id_in_vocab"] >= 0]
         
-        # # model
-        # with open(model_config_file, "r") as f:
-        #     model_configs = json.load(f)
-        # logger.info(
-        #     f"Resume model from {model_file}, the model args will be overriden by the "
-        #     f"config {model_config_file}."
-        # )
-        # embsize = model_configs["embsize"]
-        # nhead = model_configs["nheads"]
-        # d_hid = model_configs["d_hid"]
-        # nlayers = model_configs["nlayers"]
-        # n_layers_cls = model_configs["n_layers_cls"]
-
+#         # # model
+#         # with open(model_config_file, "r") as f:
+#         #     model_configs = json.load(f)
+#         # logger.info(
+#         #     f"Resume model from {model_file}, the model args will be overriden by the "
+#         #     f"config {model_config_file}."
+#         # )
+#         # embsize = model_configs["embsize"]
+#         # nhead = model_configs["nheads"]
+#         # d_hid = model_configs["d_hid"]
+#         # nlayers = model_configs["nlayers"]
+#         # n_layers_cls = model_configs["n_layers_cls"]
     
-    mask_ratio = config['mask_ratio']
-    mask_value = -1
-    pad_value = -2
-    n_input_bins = config['n_bins']
-
-
-    # TODO: to use our own dataset
-    vocab_file = "./default_census_vocab.json"
-    vocab = GeneVocab.from_file(vocab_file)
-    for s in special_tokens:
-        if s not in vocab:
-            vocab.append_token(s)
     
-    device = torch.device("cuda:6" if torch.cuda.is_available() else "cpu")
+#     # main
+#     main(config)
     
-    run = wandb.init(
-        config=config,
-        project="Pretraining scGPT",
-        reinit=True,
-        settings=wandb.Settings(start_method="fork"),
-    )
-    config = wandb.config
-    set_seed(config.seed)
-    print(config)
-    print("="*100)
-    
-    main(config)
-    
-    run.finish()
-    wandb.finish()
-    gc.collect()
+#     run.finish()
+#     wandb.finish()
+#     gc.collect()
