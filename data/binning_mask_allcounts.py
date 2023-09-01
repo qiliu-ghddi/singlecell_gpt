@@ -62,6 +62,12 @@ parser.add_argument(
     help="File containing the gene vocabulary, default to None. If None, will "
     "use the default gene vocabulary from scFormer, which use HGNC gene symbols.",
 )
+parser.add_argument(
+    "--include_files",
+    type=str,
+    nargs="*",
+    help="Space separated file names to include, default to all files in input_dir",
+)
 args = parser.parse_args()
 
 
@@ -166,6 +172,10 @@ n_bins = args.n_bins
 parquet_files = [str(f) for f in Path(data_source).glob("*.parquet")]
 num_parquet_files = len(parquet_files)
 logging.info(f"#parquet_files: {num_parquet_files}")
+
+if args.include_files is not None:
+    parquet_files = [f for f in parquet_files if f.name in args.include_files]
+print(f"Found {len(parquet_files)} files filtered.")
 
 logging.info(f"Loading raw_dataset ...")
 raw_dataset = load_dataset(
