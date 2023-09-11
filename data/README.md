@@ -12,3 +12,10 @@ conda activate <env>  # 参考教程里的激活conda env，激活运行我们�
 python build_large_scale_data.py --input-dir "raw/" --output-dir "./preprocessed" 
 python binning_mask_allcounts.py --data_source "./preprocessed/all_counts/"
 ```
+
+## Training
+
+```
+python pretrain_scGPT.py --data_source="../data/binned/" --valid_size_or_ratio=0.3
+
+```

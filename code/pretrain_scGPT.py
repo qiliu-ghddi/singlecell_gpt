@@ -32,6 +32,7 @@ from torchtext.vocab import Vocab
 from torchtext._torchtext import Vocab as VocabPybind
 
 sys.path.insert(0, "../")
+sys.path.append('/home/qiliu02/GHDDI/DS-group/ghddixcre_singlecell_gpt/contribs/scGPT/')
 import scgpt as scg
 from scgpt.utils import set_seed
 from scgpt.utils import category_str2int, eval_scib_metrics
@@ -93,7 +94,7 @@ def _parse_args():
 
     parser.add_argument(
         "--valid_size_or_ratio",
-        default=0.003
+        default=0.3
     )
 
     parser.add_argument(
