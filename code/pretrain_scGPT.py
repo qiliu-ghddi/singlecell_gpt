@@ -57,6 +57,11 @@ def _parse_args():
     # argparse
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--project_name",
+        type=str,
+        default="Pretrain_scGPT"
+    )
+    parser.add_argument(
         "-d",
         "--data_source",
         type=str,
@@ -72,7 +77,7 @@ def _parse_args():
         "--save_dir",
         type=str,
         # required=True,
-        default="./save",
+        default="../save/",
         help="The directory to save the trained model and the results.",
     )
 
@@ -176,9 +181,7 @@ def _parse_args():
     parser.add_argument(
         "--vocab_path",
         type=str,
-        default="../data/default_census_vocab.json"
-        # default="/scratch/ssd004/datasets/cellxgene/scFormer/scformer/tokenizer/default_census_vocab.json"
-        # default="./default_census_vocab.json"
+        default="./default_census_vocab.json"
     )
 
     parser.add_argument(
@@ -190,8 +193,8 @@ def _parse_args():
     parser.add_argument(
         "--batch_size",
         type=int,
+        # default=16
         default=16
-        # default=32
     )
     
     parser.add_argument(
@@ -251,7 +254,7 @@ def _parse_args():
 
     parser.add_argument(
         "--fast_transformer",
-        default=False
+        action='store_true'
     )
 
     parser.add_argument(
@@ -355,14 +358,45 @@ def _parse_args():
     parser.add_argument(
         "--gpu",
         type=int,
+        nargs='+',
         default=0
+    )
+
+    # extra 
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=42
+    )    
+
+    parser.add_argument(
+        "--amp",  # 
+        action='store_true',
+        default=False
+    )        
+    
+    parser.add_argument(
+        "--GEPC",
+        action='store_true'
+    )        
+
+    parser.add_argument(
+        "--ecs_thres",
+        type=float,
+        default=0.8
+    )        
+
+    parser.add_argument(
+        "--explicit_zero_prob",
+        action='store_true'
     )
     
     parser.add_argument(
-        "--dataset_name",
-        type=str,
-        default="cellxgene_census_human"
-    )    
+        "--save_eval_interval",
+        type=int,
+        default=1
+    )
+
     args = parser.parse_args()
     return args
 
@@ -426,6 +460,8 @@ def train(
                 metrics_to_log.update({"train/nzlp": loss_zero_log_prob.item()})
                 
         model.zero_grad()
+        loss = loss.mean()
+        
         scaler.scale(loss).backward()
         scaler.unscale_(optimizer)
         with warnings.catch_warnings(record=True) as w:
@@ -549,39 +585,56 @@ def evaluate(
 
 
 def main(args):
-    # config
-    args_dict = vars(args)
-    extra_args = {
-        'seed': 42,
-        'amp': True,
-        'GEPC': False,
-        'ecs_thres': 0.8,
-        'explicit_zero_prob': False
-    }
-    config = {**args_dict, **extra_args}
-    print(config, type(config))    
-    
     # logging
-    # dataset_name = "cellxgene_census_human"
-    # dataset_name = config['dataset_name']
-    dataset_name = config['dataset_name']
-    save_dir = Path(f"{config['save_dir']}/dev_{dataset_name}-{time.strftime('%b%d-%H-%M')}/")
+    project_name = args.project_name
+    save_dir = Path(f"save/dev_{project_name}-{time.strftime('%b%d-%H-%M')}/")
     save_dir.mkdir(parents=True, exist_ok=True)
+        
+    # saving log
+    logger = scg.logger
+    scg.utils.add_file_handler(logger, save_dir/"run.log")
+        
+    if args.load_model is not None:
+        model_dir = Path(args.load_model)
+        model_config_file = str(model_dir / "args.json")
+        model_file = str(model_dir / "best_model.pt")
+        vocab_file = str(model_dir / "vocab.json")
+        vocab = GeneVocab.from_file(vocab_file)
+        
+        # model configs
+        with open(model_config_file, "r") as f:
+            config = json.load(f)
+            
+        logger.info(
+            f"Resume model from {model_file}, the model args will override the "
+            f"config {model_config_file}."
+        )
+        config['vocab_path'] = vocab_file
+    else:
+        # config
+        config = vars(args)
+        # args_dict = vars(args)
+        
+    # extra_args = {
+    #     'seed': 42,
+    #     'amp': True,
+    #     'GEPC': False,
+    #     'ecs_thres': 0.8,
+    #     'explicit_zero_prob': False
+    # }
+    # config = {**config, **extra_args}
+    # print(config, type(config))    
     
     # saving the args to the args.json
     with open(save_dir / "args.json", "w") as f:
-        json.dump(vars(args), f, indent=4)
-    
-    # saving log
-    logger = scg.logger
-    scg.utils.add_file_handler(logger, save_dir/"run.log")    
+        json.dump(config, f, indent=4)
+        # json.dump(vars(args), f, indent=4)
 
     # saving vocab
     pad_token = config['pad_token']  # "<pad>"
     special_tokens = [pad_token, "<cls>", "<eoc>"]
     vocab_file = config['vocab_path']
     
-    # vocab_file = "./default_census_vocab.json"
     vocab = GeneVocab.from_file(vocab_file)
     for s in special_tokens:
         if s not in vocab:
@@ -591,7 +644,7 @@ def main(args):
     
     run = wandb.init(
         config=config,
-        project="pretrain_scGPT_human",
+        project=config['project_name'],
         reinit=True,
         settings=wandb.Settings(start_method="fork"),
     )
@@ -600,8 +653,21 @@ def main(args):
     set_seed(config.seed)
     print(config)
     print("="*100)
-
-    device = torch.device(f"cuda:{config.gpu}" if torch.cuda.is_available() else "cpu")
+    logger.info(f"config: {config}")
+    logger.info(f"save_dir: {save_dir}")
+    logger.info("="*100)
+    
+    if torch.cuda.is_available():
+        if isinstance(config.gpu, int):
+            device = torch.device(f"cuda:{config.gpu}")
+        elif (isinstance(config.gpu, list) and len(config.gpu) == 1):
+            device = torch.device(f"cuda:{config.gpu[0]}")
+        else:
+            device = torch.device(f"cuda")
+    else:
+        device = torch.device(f"cpu")
+    print(f"deivce: {device}")
+    logger.info(f"deivce: {device}")
     
     model = TransformerModel(
         ntokens,
@@ -624,8 +690,34 @@ def main(args):
         use_fast_transformer=config['fast_transformer'],
         pre_norm=False,
     )
-        
+    
+    if config.load_model is not None:
+        try:
+            model_dir = Path(config.load_model)
+            model_file = model_dir / "best_model.pt"
+            model.load_state_dict(torch.load(model_file))
+            logger.info(f"Loading all model params from {model_file}")
+        except:
+            # only load params that are in the model and match the size
+            model_dict = model.state_dict()
+            pretrained_dict = torch.load(model_file)
+            pretrained_dict = {
+                k: v
+                for k, v in pretrained_dict.items()
+                if k in model_dict and v.shape == model_dict[k].shape
+            }
+            for k, v in pretrained_dict.items():
+                logger.info(f"Loading params {k} with shape {v.shape}")
+            model_dict.update(pretrained_dict)
+            model.load_state_dict(model_dict)
+    
     model.to(device)
+    
+    if isinstance(args.gpu, list) and len(args.gpu) > 1:
+        model = torch.nn.DataParallel(model, device_ids=args.gpu)
+    print(f"model: {type(model)}")
+    logger.info(f"model: {type(model)}")
+    
     wandb.watch(model)
 
     lr = config['lr']
@@ -649,13 +741,13 @@ def main(args):
     define_wandb_metrcis()
 
     data_source = config['data_source']
-    cache_dir = Path(data_source).parent / "cache"
+    cache_dir = Path(data_source) / "cache"
     cls_prefix_datatable = Path(data_source) / "databanks_binned.parquet"
     dataset = load_dataset(
         "parquet",
         data_files=str(cls_prefix_datatable),
         split="train",
-        cache_dir=str(cache_dir),
+        # cache_dir=str(cache_dir),
     )
     dataset = dataset.with_format("torch")
 
@@ -714,7 +806,7 @@ def main(args):
             best_model_epoch = epoch
             logger.info(f"Best model with score {best_val_loss:5.4f}")
 
-        save_eval_interval = 100
+        save_eval_interval = 100 if 'save_eval_interval' not in config else config['save_eval_interval']
         if epoch % save_eval_interval == 0 or epoch == epochs:
         # if epoch % config.save_eval_interval == 0 or epoch == config.epochs:
             logger.info(f"Saving model to {save_dir}")
@@ -723,7 +815,12 @@ def main(args):
         scheduler.step()
 
     # save the best model
-    torch.save(best_model.state_dict(), save_dir / "best_model.pt")
+    if isinstance(best_model, torch.nn.DataParallel):
+        model_state_dict = best_model.module.state_dict()
+    else:
+        model_state_dict = best_model.state_dict()
+    torch.save(model_state_dict, save_dir / "best_model.pt")
+    # torch.save(best_model.state_dict(), save_dir / "best_model.pt")
     
     artifact = wandb.Artifact(f"best_model", type="model")
     glob_str = os.path.join(save_dir, "best_model.pt")
@@ -734,7 +831,6 @@ def main(args):
     gc.collect()    
     
 
-# %%
 if __name__=="__main__":
     if scg.utils.isnotebook():
         parser = argparse.ArgumentParser()
