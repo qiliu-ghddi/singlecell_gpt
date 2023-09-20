@@ -65,7 +65,8 @@ parser.add_argument(
 parser.add_argument(
     "--vocab-file",
     type=str,
-    default=None,
+    required=True,
+    default="./default_census_vocab.json",
     help="File containing the gene vocabulary, default to None. If None, will "
     "use the default gene vocabulary from scFormer, which use HGNC gene symbols.",
 )

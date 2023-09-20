@@ -8,10 +8,16 @@
 例：
 ```shell
 cd data
-conda activate <env>  # 参考教程里的激活conda env，激活运行我们的scgpt环境
+# conda activate <env>  # 参考教程里的激活conda env，激活运行我们的scgpt环境
+conda activate /home/qiliu02/miniconda3/envs/single_cell_gpt
+# or
+conda activate /home/cliang02/work/software/common/proglang/mambaforge/envs/cre
+
 python build_large_scale_data.py --input-dir "raw/" --output-dir "./preprocessed" 
 python binning_mask_allcounts.py --data_source "./preprocessed/all_counts/"
 ```
+注意：`single_cell_gpt`这个环境不支持`flash attentition`, 如果想使用全部特性的话，需要`ssh comput171`or`ssh comput172`，然后激活`cre`这个环境.
+
 
 ## Training
 
