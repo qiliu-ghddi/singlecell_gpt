@@ -610,6 +610,8 @@ def main(args):
             f"config {model_config_file}."
         )
         config['vocab_path'] = vocab_file
+        config['load_model'] = args.load_model
+        
     else:
         # config
         config = vars(args)
