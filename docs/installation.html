@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>安装 &mdash; single-cell gpt 0.0.1 文档</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=5a0213dc"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="_static/translations.js?v=beaddf03"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="教程" href="tutorials/index.html" />
+    <link rel="prev" title="预训练single-cell大模型文档" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            single-cell gpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">安装</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#scgpt">安装scGPT运行环境</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing/index.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scgpt/scgpt.html">scgpt package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">single-cell gpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">安装</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>安装<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>对于GHDDI成员, cluster上已经安装好了运行所用的conda环境, 详情见<a class="reference internal" href="contributing/index.html"><span class="std std-doc">contributing</span></a>.</p>
+<p>对于其他用户, 除了本文档, 也可以参照<a class="reference external" href="https://github.com/bowang-lab/scGPT">scGPT</a>创建所需的环境.</p>
+<section id="scgpt">
+<h2>安装scGPT运行环境<a class="headerlink" href="#scgpt" title="Link to this heading"></a></h2>
+<p>预训练单细胞大模型例如scGPT, 要求 Python &gt;= 3.7, R &gt;=3.6.1. 如果要从头配置环境, 可以使用conda和pip.</p>
+<ol class="arabic">
+<li><p>安装 <a class="reference external" href="https://conda.io/projects/conda/en/latest/user-guide/install/index.html">conda</a></p></li>
+<li><p>创建一个新的conda环境, 以名称”flash-attn”为例:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;flash-attn&quot;</span><span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.7.13
+</pre></div>
+</div>
+</li>
+<li><p>激活环境:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>flash-attn
+</pre></div>
+</div>
+</li>
+<li><p>安装 <a class="reference external" href="https://pytorch.org/">PyTorch</a>, <a class="reference external" href="https://github.com/Dao-AILab/flash-attention">flash-attention</a></p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">torch</span><span class="o">==</span><span class="m">1</span>.13.0
+pip<span class="w"> </span>install<span class="w"> </span>scgpt<span class="w"> </span><span class="s2">&quot;flash-attn&lt;1.0.5&quot;</span><span class="w"> </span><span class="s2">&quot;orbax&lt;0.1.8&quot;</span>
+<span class="c1"># pip uninstall scgpt</span>
+</pre></div>
+</div>
+</li>
+<li><p>注意, flash-attention的安装对平台有要求, 建议用的机器RAM不少于96GB, CUDA驱动11.7. 另外假如CPU很多，在安装flash-attn可能会卡死:</p>
+<blockquote>
+<div><p>If your machine has less than 96GB of RAM and lots of CPU cores, ninja might run too many parallel compilation jobs that could exhaust the amount of RAM. To limit the number of parallel compilation jobs, you can set the environment variable MAX_JOBS:
+MAX_JOBS=4 pip install flash-attn –no-build-isolation</p>
+</div></blockquote>
+<p>假如还是失败, 可尝试采用源码安装的方式来安装 <code class="docutils literal notranslate"><span class="pre">flash-attn</span></code>:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>-b<span class="w"> </span>v1.0.1<span class="w"> </span>git@github.com:Dao-AILab/flash-attention.git
+<span class="nb">cd</span><span class="w"> </span>flash-attention
+python<span class="w"> </span>setup.py<span class="w"> </span>install
+</pre></div>
+</div>
+</li>
+<li><p>卸载 <code class="docutils literal notranslate"><span class="pre">scgpt</span></code> 包. 对于需要修改 <code class="docutils literal notranslate"><span class="pre">scgpt</span></code> 源码包的任务, 我们采用本地源码导入, 因此需要uninstall之前pip所安装的scgpt模块.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">uninstall</span> <span class="n">scgpt</span>
+</pre></div>
+</div>
+</li>
+<li><p>安装其他依赖</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">wandb</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="index.html" class="btn btn-neutral float-left" title="预训练single-cell大模型文档" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="tutorials/index.html" class="btn btn-neutral float-right" title="教程" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, qiliu。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

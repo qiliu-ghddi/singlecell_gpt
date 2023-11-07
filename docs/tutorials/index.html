@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>教程 &mdash; single-cell gpt 0.0.1 文档</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5a0213dc"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="贡献" href="../contributing/index.html" />
+    <link rel="prev" title="安装" href="../installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            single-cell gpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">安装</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">教程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">数据预处理</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scgpt">预训练scGPT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">精调scGPT</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scgpt/scgpt.html">scgpt package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">single-cell gpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">教程</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/index.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>教程<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<section id="id2">
+<h2>数据预处理<a class="headerlink" href="#id2" title="Link to this heading"></a></h2>
+<p>使用我们数据预处理脚本来将 <code class="docutils literal notranslate"><span class="pre">.h5ad</span></code> 数据处理成scGPT pretraining需要的input embedding数据集.</p>
+<ol class="arabic">
+<li><p>首先<a class="reference external" href="https://git-scm.com/downloads">安装git</a>, 终端输入 <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">--version</span></code>测试，已安装的话跳过.</p></li>
+<li><p>使用git clone, 将预处理脚本clone到自己的路径.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">qiliu</span><span class="o">-</span><span class="n">ghddi</span><span class="o">/</span><span class="n">singlecell_gpt</span>
+</pre></div>
+</div>
+</li>
+<li><p>预处理, 给定 <code class="docutils literal notranslate"><span class="pre">*.h5ad</span></code>文件的路径，将其用处理为便于大规模数据处理的 <code class="docutils literal notranslate"><span class="pre">.parquet</span></code> 格式, 存放于 <code class="docutils literal notranslate"><span class="pre">all_counts</span></code>路径下.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">data</span>
+<span class="n">bash</span> <span class="n">build_large_scale_data</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>运行之前, 我们需要先修改 <code class="docutils literal notranslate"><span class="pre">build_large_scale_data.sh</span></code> 脚本. 这里我们给了demo数据(<code class="docutils literal notranslate"><span class="pre">data/raw/8</span></code>) 作为demo数据, 可以先进行测试, 完成整个流程, 后续将自己的数据进行类似的处理.</p>
+</li>
+<li><p>查看预训练的数据. 如图所示, 处理后的数据(<code class="docutils literal notranslate"><span class="pre">all_counts</span></code>)路径, 可作为后续预训练 <code class="docutils literal notranslate"><span class="pre">scGPT</span></code>的输入.</p></li>
+</ol>
+<p><img alt="预训练的数据" src="../_images/preprocessed_all_counts.png" /></p>
+</section>
+<section id="scgpt">
+<h2>预训练scGPT<a class="headerlink" href="#scgpt" title="Link to this heading"></a></h2>
+<p>当前的scGPT模型是以<a class="reference external" href="https://github.com/bowang-lab/scGPT/tree/dev-temp">scGPT (dev-temp)</a> 为蓝本进行修改的, 和<a class="reference external" href="https://github.com/bowang-lab/scGPT">scGPT (main)</a> 公布的模型存在较多区别.</p>
+<p>我们预训练scGPT的脚本为 <code class="docutils literal notranslate"><span class="pre">examples/pretrain.sh</span></code>, 需要运行满足有GPU, 且正确安装运行scGPT的Conda环境的机器上. 这里以装有A100的GHDDI服务器（代号 <code class="docutils literal notranslate"><span class="pre">comput171</span></code>）为例, 执行下面的命令.</p>
+<ol class="arabic">
+<li><p>准备工作. 转入到 <code class="docutils literal notranslate"><span class="pre">pretrain.sh</span></code>所在的路径</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">comput171</span>
+<span class="n">nvidia</span><span class="o">-</span><span class="n">smi</span>
+<span class="n">cd</span> <span class="n">examples</span><span class="o">/</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">cliang02</span><span class="o">/</span><span class="n">work</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">common</span><span class="o">/</span><span class="n">proglang</span><span class="o">/</span><span class="n">mambaforge</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">cre</span>
+<span class="c1"># or</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">qiliu02</span><span class="o">/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">flash</span><span class="o">-</span><span class="n">attn</span>
+</pre></div>
+</div>
+</li>
+<li><p>预训练 <code class="docutils literal notranslate"><span class="pre">scGPT</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bash</span> <span class="n">pretrain</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+<p>在运行前, 需要根据自己的需要修改 <code class="docutils literal notranslate"><span class="pre">pretrain.sh</span></code>中的参数.</p>
+</li>
+<li><p>查看运行结果. 预训练的结果包括模型的 <code class="docutils literal notranslate"><span class="pre">checkpoints</span></code>, 参数文件, 词表以及运行日志等.</p></li>
+<li><p>查看运行日志. 当前预训练过程中使用tensorboard保存日志</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">save</span><span class="o">-</span><span class="nb">dir</span><span class="o">&gt;</span>
+<span class="n">tensorboard</span> <span class="o">--</span><span class="n">logdir</span> <span class="n">tensorboard</span><span class="o">/</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p><img alt="运行pretrain脚本的情况" src="../_images/pretrain_running.png" /></p>
+<p><img alt="pretrain scGPT后结果" src="../_images/pretrain_results.png" /></p>
+<p><img alt="pretrain scGPT保存的日志" src="../_images/pretrain_results_tensorboard.png" /></p>
+</section>
+<section id="id3">
+<h2>精调scGPT<a class="headerlink" href="#id3" title="Link to this heading"></a></h2>
+<p>scGPT 提供了一些<a class="reference external" href="https://github.com/bowang-lab/scGPT/tree/main/tutorials">下游finetune任务</a>). 将我们训练得到的结果作为参数来运行这些下游任务.</p>
+<p>在 <code class="docutils literal notranslate"><span class="pre">examples</span></code>中提供了 <code class="docutils literal notranslate"><span class="pre">finetune_integration</span></code>作为例子，修改脚本中的 <code class="docutils literal notranslate"><span class="pre">load_model</span></code>的值，为我们上面训练得到的 <code class="docutils literal notranslate"><span class="pre">checkpoint</span></code>所在的路径，即可运行. 其会下载 <code class="docutils literal notranslate"><span class="pre">PBMC</span> <span class="pre">10K</span></code>数据，并用我们得到的模型进行 <code class="docutils literal notranslate"><span class="pre">batch</span> <span class="pre">integration</span></code>的finetuning，最后将结果保存到 <code class="docutils literal notranslate"><span class="pre">wandb</span></code>的 <code class="docutils literal notranslate"><span class="pre">run</span></code>中.</p>
+<p><img alt="finetune_integration.py中要关注的参数" src="../_images/finetune_integration_params.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../installation.html" class="btn btn-neutral float-left" title="安装" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../contributing/index.html" class="btn btn-neutral float-right" title="贡献" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, qiliu。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
