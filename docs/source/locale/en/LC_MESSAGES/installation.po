@@ -1,0 +1,192 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, qiliu
+# This file is distributed under the same license as the single-cell gpt
+# package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: single-cell gpt \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-06 10:54+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../source/installation.md:1
+msgid "安装"
+msgstr "Install"
+
+#: ../../source/installation.md:3
+msgid "安装scGPT运行环境"
+msgstr "Install scGPT requirements"
+
+#: ../../source/installation.md:5
+msgid ""
+"scGPT works with Python >= 3.7.13 and R >=3.6.1. It can be installed via "
+"conda and pip."
+msgstr ""
+
+#: ../../source/installation.md:7
+msgid ""
+"Install conda. We typically use the [mambaforge][mambaforge] "
+"distribution. Use python>=3.9, and consider using mamba instead of conda."
+" Mamba is a drop-in replacement for conda that is significantly more "
+"efficient."
+msgstr ""
+
+#: ../../source/installation.md:8
+msgid "Create a new conda environment:"
+msgstr ""
+
+#: ../../source/installation.md:13
+msgid "Activate your environment:"
+msgstr ""
+
+#: ../../source/installation.md:18
+msgid ""
+"If using conda/mamba, then just run `conda install -c anaconda pip` and "
+"skip this section."
+msgstr ""
+
+#: ../../source/installation.md:19
+msgid ""
+"Install [Python][Python], we prefer the "
+"[pyenv](https://github.com/pyenv/pyenv/) version management system, along"
+" with [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv/)."
+msgstr ""
+
+#: ../../source/installation.md:20
+msgid ""
+"Install [PyTorch][PyTorch] and [jax][jax]. If you have an Nvidia GPU, be "
+"sure to install versions of PyTorch and jax that support it -- scvi-tools"
+" runs much faster with a discrete GPU."
+msgstr ""
+
+#~ msgid "Installation"
+#~ msgstr ""
+
+#~ msgid "Prerequisites"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Install conda. We typically use the "
+#~ "[mambaforge] distribution. Use python>=3.9, "
+#~ "and consider using mamba instead of "
+#~ "conda. Mamba is a drop-in "
+#~ "replacement for conda that is "
+#~ "significantly more efficient."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Install [Python], we prefer the "
+#~ "[pyenv](https://github.com/pyenv/pyenv/) version "
+#~ "management system, along with [pyenv-"
+#~ "virtualenv](https://github.com/pyenv/pyenv-virtualenv/)."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Install [PyTorch] and [jax]. If you "
+#~ "have an Nvidia GPU, be sure to "
+#~ "install versions of PyTorch and jax "
+#~ "that support it -- scvi-tools runs"
+#~ " much faster with a discrete GPU."
+#~ msgstr ""
+
+#~ msgid "Apple silicon"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Installing scvi-tools on a Mac "
+#~ "with Apple Silicon is only possible "
+#~ "using a native version of python. "
+#~ "A native version of python can be"
+#~ " installed with an Apple Silicon "
+#~ "version of mambaforge (which can be "
+#~ "installed from a native version of "
+#~ "homebrew via `brew install --cask "
+#~ "mambaforge`). This is due to an "
+#~ "scvi-tools dependency on jax, which "
+#~ "cannot be run via Rosetta."
+#~ msgstr ""
+
+#~ msgid "Windows"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "After setting up a virtual environment"
+#~ " with conda/mamba/pyenv, please install the"
+#~ " [community-built version of "
+#~ "jax](https://github.com/cloudhan/jax-windows-builder) "
+#~ "before installing scvi-tools."
+#~ msgstr ""
+
+#~ msgid "GPU"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "All scvi-tools models will be "
+#~ "faster when accelerated with a GPU. "
+#~ "Before installing scvi-tools, you can"
+#~ " install GPU versions of PyTorch and"
+#~ " jax using conda as follows:"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Please go to the respective package "
+#~ "website for more information on how "
+#~ "to install with pip."
+#~ msgstr ""
+
+#~ msgid "Conda"
+#~ msgstr ""
+
+#~ msgid "Pip"
+#~ msgstr ""
+
+#~ msgid "Through pip with packages to run notebooks. This installs scanpy, etc.:"
+#~ msgstr ""
+
+#~ msgid "Nightly version - clone this repo and run:"
+#~ msgstr ""
+
+#~ msgid "Development"
+#~ msgstr ""
+
+#~ msgid "For development - clone this repo and run:"
+#~ msgstr ""
+
+#~ msgid "R"
+#~ msgstr ""
+
+#~ msgid "scvi-tools can be called from R via Reticulate."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This is only recommended for basic "
+#~ "functionality (getting the latent space, "
+#~ "normalized expression, differential expression). "
+#~ "For more involved analyses with scvi-"
+#~ "tools, we highly recommend using it "
+#~ "from Python."
+#~ msgstr ""
+
+#~ msgid "The easiest way to install scvi-tools for R is via conda."
+#~ msgstr ""
+
+#~ msgid "Install conda prerequisites."
+#~ msgstr ""
+
+#~ msgid "Install R and reticulate in the conda environment:"
+#~ msgstr ""
+
+#~ msgid "Then in your R code:"
+#~ msgstr ""
+

@@ -11,11 +11,11 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('../../code/'))
-# print('sys.path', sys.path)
-# print('list dir', os.listdir(sys.path[0]))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../..'))
+print('sys.path', sys.path)
+print('list dir', os.listdir(sys.path[0]))
 
 
 # -- Project information -----------------------------------------------------
@@ -33,13 +33,16 @@ release = '0.0.1'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'myst_parser',
     'sphinx.ext.autodoc',
+    # 'sphinx.ext.autosummary',
     'sphinx_rtd_theme',
     'sphinx.ext.viewcode',
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
-    "nbsphinx",
-    "nbsphinx_link",
+    # "nbsphinx",
+    # 'nbsphinx_link',
+    'sphinx_markdown_tables'
 ]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -68,11 +71,11 @@ html_theme_options = {
 }
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'numpy': ('https://numpy.org/doc/stable/', None),
-    'PyTorch': ('https://pytorch.org/docs/stable/', None),
-}
+# intersphinx_mapping = {
+#     'python': ('https://docs.python.org/3/', None),
+#     'numpy': ('https://numpy.org/doc/stable/', None),
+#     'PyTorch': ('https://pytorch.org/docs/stable/', None),
+# }
 
 show_authors = True
 
@@ -89,3 +92,18 @@ html_static_path = ['_static']
 # autodoc_inherit_docstrings = False
 
 # master_doc = 'index'
+
+locale_dirs = ['locale/']   # path is example but recommended.
+gettext_compact = False     # optional.
+
+
+
+# Generate the API documentation when building
+autosummary_generate = True  # Turn on sphinx.ext.autosummary
+autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
+
+# -- Options for LaTeX output -------------------------------------------------
+
+latex_elements = {
+    'preamble': r'\setcounter{tocdepth}{3}',
+}
