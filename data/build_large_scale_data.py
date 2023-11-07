@@ -1,36 +1,27 @@
 # build large-scale data in scBank format from a group of AnnData objects
-import os
-import sys
+import gc
 import json
-import logging
+from pathlib import Path
 import argparse
 import shutil
 import traceback
-import gc
-from pathlib import Path
-from datetime import datetime
 from typing import Dict, List, Optional
-
 import warnings
-warnings.filterwarnings("ignore", category=ResourceWarning)
-warnings.filterwarnings("ignore")
 import numpy as np
-import scanpy as sc
+import os
+from datetime import datetime
+import logging
 
+import scanpy as sc
+import warnings
+warnings.filterwarnings("ignore")
+
+import sys
+# sys.path.append('/home/qiliu02/GHDDI/DS-group/ghddixcre_singlecell_gpt/contribs/scGPT')
 sys.path.append('..')
-sys.path.append('/home/qiliu02/GHDDI/DS-group/ghddixcre_singlecell_gpt/contribs/scGPT/')
 import scgpt
 from scgpt import scbank
 
-t_stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-Path("./log").mkdir(parents=True, exist_ok=True)
-logging.basicConfig(
-    filename='log/build_large_scale_data.log',  # Specify the file name for the log
-    level=logging.INFO,  # Set the minimum log level (you can adjust this)
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-logging.info(t_stamp)
 
 parser = argparse.ArgumentParser(
     description="Build large-scale data in scBank format from a group of AnnData objects"
@@ -44,7 +35,7 @@ parser.add_argument(
 parser.add_argument(
     "--output-dir",
     type=str,
-    default="./databanks",
+    default="./data.scb",
     help="Directory to save scBank data, by default will make a directory named "
     "data.scb in the current directory",
 )
@@ -54,6 +45,14 @@ parser.add_argument(
     nargs="*",
     help="Space separated file names to include, default to all files in input_dir",
 )
+
+parser.add_argument(
+    "--include-ids",
+    type=int,
+    nargs="*",
+    help="Space separated ids to include, default to all files in input_dir",
+)
+
 parser.add_argument(
     "--metainfo",
     type=str,
@@ -66,7 +65,7 @@ parser.add_argument(
     "--vocab-file",
     type=str,
     required=True,
-    default="./default_census_vocab.json",
+    # default=None,
     help="File containing the gene vocabulary, default to None. If None, will "
     "use the default gene vocabulary from scFormer, which use HGNC gene symbols.",
 )
@@ -74,24 +73,32 @@ parser.add_argument(
 parser.add_argument(
     "--N",
     type=int,
-    default=10000,
-    help="Hyperparam for filtering genes, default to 10000.",
+    default=200000,
+    help="Hyperparam for filtering genes, default to 200000.",
 )
 
 args = parser.parse_args()
-print(json.dumps(vars(args), indent=4))
+
+logging.basicConfig(
+    filename='./build_large_scale_data.log',
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+vocab_path = Path(args.vocab_file)
+print(args)
+logging.info("-" * 89)
+logging.info(f"args: {args}")
+logging.info("-" * 89)
 
 input_dir = Path(args.input_dir)
 output_dir = Path(args.output_dir)
-output_dir.mkdir(parents=True, exist_ok=True)
 files = [f for f in input_dir.glob("*/*.h5ad")]
+# files = [f for f in input_dir.glob("*.h5ad")]
 print(f"Found {len(files)} files in {input_dir}")
-
 if args.include_files is not None:
     files = [f for f in files if f.name in args.include_files]
-print(f"Found {len(files)} files filtered.")
-
-    
 if args.metainfo is not None:
     metainfo = json.load(open(args.metainfo))
     files = [f for f in files if f.stem in metainfo]
@@ -100,6 +107,20 @@ if args.metainfo is not None:
         for f in files
         if "include_disease" in metainfo[f.stem]
     }
+
+if args.include_ids is not None:
+    files = [f for f in files if int(f.parts[-2]) in args.include_ids]
+print(f"Found {len(files)} files filtered.")
+
+    
+# if args.metainfo is not None:
+#     metainfo = json.load(open(args.metainfo))
+#     files = [f for f in files if f.stem in metainfo]
+#     include_obs = {
+#         f.stem: {"disease": metainfo[f.stem]["include_disease"]}
+#         for f in files
+#         if "include_disease" in metainfo[f.stem]
+#     }
 
 if args.vocab_file is None:
     vocab = scgpt.tokenizer.get_default_gene_vocab()
@@ -112,7 +133,7 @@ def preprocess(
     adata: sc.AnnData,
     main_table_key: str = "counts",
     include_obs: Optional[Dict[str, List[str]]] = None,
-    N = 10000
+    N = 200000
 ) -> sc.AnnData:
     """
     Preprocess the data for scBank. This function will modify the AnnData object in place.
@@ -130,8 +151,18 @@ def preprocess(
         for col, values in include_obs.items():
             adata = adata[adata.obs[col].isin(values)]
 
+    if adata.raw is not None:
+        adata.X = adata.raw.X.copy()
+
     # filter genes
+    print(f".. before filter_genes: {adata},{adata.shape}")
+    logging.info(f"before filter_genes: {adata},{adata.shape}")
+    
     sc.pp.filter_genes(adata, min_counts=(3 / 10000) * N)
+    
+    print(f".. after filter_genes: {adata},{adata.shape}")
+    logging.info(f"after filter_genes: {adata},{adata.shape}")
+    # sc.pp.filter_genes(adata, min_counts=(3 / 10000) * N)
 
     # TODO: add binning in sparse matrix and save in separate datatable
     # preprocessor = Preprocessor(
@@ -145,7 +176,13 @@ def preprocess(
     # )
     # preprocessor(adata)
 
-    adata.layers[main_table_key] = adata.X.copy()  # preserve counts
+    try:
+        adata.layers[main_table_key] = adata.raw.X.copy()  # preserve counts
+    except Exception as e:
+        print(f"Error {e}! while preprocessing adata")
+        adata.layers[main_table_key] = adata.X.copy()  # preserve counts
+
+    # adata.layers[main_table_key] = adata.X.copy()  # preserve counts
     # sc.pp.normalize_total(adata, target_sum=1e4)
     # sc.pp.log1p(adata)
     # adata.raw = adata  # freeze the state in `.raw`
@@ -165,24 +202,27 @@ def preprocess(
 
 main_table_key = "counts"
 token_col = "feature_name"
-for f in files:
+for i, f in enumerate(files):
     try:
+        print(f".. {i} {f}")
+        logging.info(f".. {i} {f}")
         adata = sc.read(f, cache=True)
         adata = preprocess(
             adata, main_table_key, 
             N = args.N
         )
-        print(f"read {adata.shape} valid data from {f.name}")
+        print(f"read {adata.shape} valid data from {f}")
 
         # TODO: CHECK AND EXPAND VOCABULARY IF NEEDED
         # NOTE: do not simply expand, need to check whether to use the same style of gene names
 
         # BUILD SCBANK DATA
-        to_dir = f"{output_dir}/{f.parts[-2]}.scb"
+        to_dir = f"{output_dir}/{f.parts[-2]}.scb"        
         db = scbank.DataBank.from_anndata(
             adata,
             vocab=vocab,
             to=to_dir,
+            # to=output_dir / f"{f.stem}.scb",
             main_table_key=main_table_key,
             token_col=token_col,
             immediate_save=False,
@@ -198,21 +238,21 @@ for f in files:
     except Exception as e:
         traceback.print_exc()
         warnings.warn(f"failed to process {f.name}: {e}")
-        shutil.rmtree(f"{to_dir}", ignore_errors=True)
+        shutil.rmtree(output_dir / f"{f.stem}.scb", ignore_errors=True)
 
 # or run scbank.DataBank.batch_from_anndata(files, to=args.output_dir)
 # test loading from disk
 # db = scbank.DataBank.from_path(args.output_dir)
 
-# %% run this to copy all parquet datatables to a single directory
-# output_dir = "./databanks"
+# run this to copy all parquet datatables to a single directory
 target_dir = output_dir / f"all_{main_table_key}"
-target_dir.mkdir(exist_ok=True)
+target_dir.mkdir(parents=True, exist_ok=True)
 for f in files:
-    output_parquet_dt = Path(f"{output_dir}/{f.parts[-2]}.scb/{main_table_key}.datatable.parquet").resolve()
-    print(output_parquet_dt)
+    output_parquet_dt = (
+        output_dir / f"{f.parts[-2]}.scb" / f"{main_table_key}.datatable.parquet"
+    )    
     if output_parquet_dt.exists():
-        dst_dt = Path(f"{target_dir}/{f.parts[-2]}.datatable.parquet").resolve()
-        print(dst_dt)
-        os.symlink(output_parquet_dt, dst_dt)
-
+        src = output_parquet_dt.resolve()
+        dst = target_dir.resolve() / f"{f.parts[-2]}.datatable.parquet"
+        print(f"src: {src} <--> dst: {dst}")
+        os.symlink(src, dst)    
