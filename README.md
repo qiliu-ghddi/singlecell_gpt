@@ -1,3 +1,3 @@
 # singlecell_gpt
 
-Pretrainng single-cell LLMs.
+Pretraining single-cell LLMs.
