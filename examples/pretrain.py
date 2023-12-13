@@ -677,26 +677,7 @@ model = TransformerModel(
     use_fast_transformer=args.fast_transformer,
     fast_transformer_backend="flash",
 )
-if args.load_model is not None:
-    try:
-        model.load_state_dict(torch.load(model_file))
-    except:
-        from collections import OrderedDict
-
-        params = OrderedDict()
-        for key, value in torch.load(model_file).items():
-            params[key.replace("module.", "")] = value
-        model.load_state_dict(params)
 model.to(device)
-logger.info(model)
-if IS_DATA_PARALLEL:
-    model = torch.nn.parallel.DistributedDataParallel(
-        model,
-        device_ids=[device],
-        output_device=device,
-        find_unused_parameters=False,
-    )
-
 
 criterion = masked_mse_loss
 criterion_cls = nn.CrossEntropyLoss()
@@ -723,6 +704,43 @@ else:
 
 # amp fp16 training
 scaler = torch.cuda.amp.GradScaler(enabled=args.fp16)
+
+best_val_loss = float("inf")
+
+if args.load_model is not None:
+    checkpoint = torch.load(model_file, map_location=device)
+    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+    scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+    scaler.load_state_dict(checkpoint['scaler_state_dict'])
+    epoch = checkpoint['epoch']
+    best_val_loss = checkpoint['loss']
+    
+    # load model state
+    try:
+        model.load_state_dict(checkpoint['model_state_dict'])        
+        # model.load_state_dict(torch.load(model_file))
+    except:
+        from collections import OrderedDict
+
+        params = OrderedDict()
+        for key, value in torch.load(model_file).items():
+            params[key.replace("module.", "")] = value
+        model.load_state_dict(params)
+        
+logger.info("="*50)
+logger.info(f"optimizer: {optimizer}")
+logger.info(f"scheduler: {scheduler}")
+logger.info(f"scaler: {scaler}")
+logger.info(f"best_val_loss: {best_val_loss}")
+
+# logger.info(model)
+if IS_DATA_PARALLEL:
+    model = torch.nn.parallel.DistributedDataParallel(
+        model,
+        device_ids=[device],
+        output_device=device,
+        find_unused_parameters=False,
+    )
 
 
 def train(model: nn.Module, train_loader: DataLoader, epoch: int) -> None:
@@ -875,12 +893,15 @@ def train(model: nn.Module, train_loader: DataLoader, epoch: int) -> None:
         total_mvc += loss_mvc.item() if MVC else 0.0
         total_error += mre.item()
         if args.local_rank in [0, -1] and batch % log_interval == 0 and batch > 0:
-            # Writer logs gradients distribution
-            for name, param in model.named_parameters():
-                if param.requires_grad and param.grad is not None:
-                    writer.add_histogram(name + "_grad", param.grad, global_iter)
-                    writer.add_histogram(name + "_param", param, global_iter)
-
+            try:
+                # Writer logs gradients distribution
+                for name, param in model.named_parameters():
+                    if param.requires_grad and param.grad is not None:
+                        writer.add_histogram(name + "_grad", param.grad, global_iter)
+                        writer.add_histogram(name + "_param", param, global_iter)
+            except Exception as e:
+                print(f"Error {e} while adding histogram")
+            
             # Log scalar values
             lr = scheduler.get_last_lr()[0]
             ms_per_batch = (time.time() - start_time) * 1000 / log_interval
@@ -1014,33 +1035,73 @@ def eval_and_save(
             writer.add_scalar("valid/mre", val_mre, iter_or_epoch)
 
         global best_val_loss
+
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             # save the best model
             logger.info(f"Saving the best model to {args.save_dir}")
+
+            if isinstance(model, (nn.DataParallel, nn.parallel.DistributedDataParallel)):
+                model_state_dict = model.module.state_dict()
+            else:
+                model_state_dict = model.state_dict()
+            
             torch.save(
-                model.module.state_dict()
-                if isinstance(
-                    model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
-                )
-                else model.state_dict(),
+                {
+                    'epoch': epoch,
+                    'model_state_dict': model_state_dict,
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'scheduler_state_dict': scheduler.state_dict(),
+                    'scaler_state_dict': scaler.state_dict(),
+                    'loss': best_val_loss,
+                },
                 args.save_dir + "/best_model.pt",
             )
 
         if save:
+            if isinstance(model, (nn.DataParallel, nn.parallel.DistributedDataParallel)):
+                model_state_dict = model.module.state_dict()
+            else:
+                model_state_dict = model.state_dict()
+            
             torch.save(
-                model.module.state_dict()
-                if isinstance(
-                    model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
-                )
-                else model.state_dict(),
+                {
+                    'epoch': epoch,
+                    'model_state_dict': model_state_dict,
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'scheduler_state_dict': scheduler.state_dict(),
+                    'scaler_state_dict': scaler.state_dict(),
+                    'loss': best_val_loss,
+                },
                 args.save_dir + f"/model-{'ep' if is_epoch else ''}{iter_or_epoch}.pt",
             )
+
+        # if val_loss < best_val_loss:
+        #     best_val_loss = val_loss
+        #     # save the best model
+        #     logger.info(f"Saving the best model to {args.save_dir}")
+        #     torch.save(
+        #         model.module.state_dict()
+        #         if isinstance(
+        #             model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
+        #         )
+        #         else model.state_dict(),
+        #         args.save_dir + "/best_model.pt",
+        #     )
+
+        # if save:
+        #     torch.save(
+        #         model.module.state_dict()
+        #         if isinstance(
+        #             model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
+        #         )
+        #         else model.state_dict(),
+        #         args.save_dir + f"/model-{'ep' if is_epoch else ''}{iter_or_epoch}.pt",
+        #     )
     if IS_DATA_PARALLEL:
         torch.distributed.barrier()
 
 
-best_val_loss = float("inf")
 logger.info("Start training")
 for epoch in range(1, args.epochs + 1):
     epoch_start_time = time.time()
@@ -1049,43 +1110,3 @@ for epoch in range(1, args.epochs + 1):
 
 writer.flush()
 writer.close()
-
-# # compare with the naive baseline of all ones
-# data_dict = next(iter(valid_loader))
-# input_values = data_dict["masked_expr"]
-# tagert_values = data_dict["expr"]
-# predict_ones = torch.ones(input_values.shape, dtype=torch.float32)
-# mse = masked_mse_loss(predict_ones, tagert_values, input_values.eq(args.mask_value))
-# mre = masked_relative_error(
-#     predict_ones, tagert_values, input_values.eq(args.mask_value)
-# )
-# logger.info(f"MSE: {mse.item()}, MRE: {mre.item()}")
-
-
-# # %% [markdown]
-# # # Analysis
-# model.to(device)
-# model.eval()
-
-# %% [markdown]
-# ## Cell embeddings
-
-
-# def map_transform(examples: Dict[str, List]) -> Dict[str, torch.Tensor]:
-#     """
-#     Transform batch examples to a tensor.
-#     """
-#     # tensorize the examples
-#     examples = {
-#         k: [torch.tensor(v_i) for v_i in v] for k, v in examples.items() if k != "id"
-#     }
-#     examples = collator(examples)
-#     return examples
-
-
-# valid_dataset.set_transform(map_transform)
-
-# cell_gene_embeddings = model.encoder(valid_dataset[:10000]["gene"].to(device))
-# cell_gene_embeddings = cell_gene_embeddings.detach().cpu().numpy()
-
-# cell_embeddings = np.mean(cell_gene_embeddings, axis=1)
