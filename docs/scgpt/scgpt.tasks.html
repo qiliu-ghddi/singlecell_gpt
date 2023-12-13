@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.tasks package &mdash; single-cell gpt 0.0.1 文档</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5a0213dc"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="scgpt.tokenizer package" href="scgpt.tokenizer.html" />
+    <link rel="prev" title="scgpt.scbank package" href="scgpt.scbank.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            single-cell gpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/index.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="scgpt.html">scgpt package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="scgpt.html#modules">Modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="scgpt.model.html">scgpt.model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.scbank.html">scgpt.scbank package</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">scgpt.tasks package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-scgpt.tasks.grn">scgpt.tasks.grn</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="#scgpt.tasks.grn.GeneEmbedding"><code class="docutils literal notranslate"><span class="pre">GeneEmbedding</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="#module-scgpt.tasks">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.tokenizer.html">scgpt.tokenizer package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="scgpt.utils.html">scgpt.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.html#module-scgpt.data_collator">scgpt.data_collator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.html#module-scgpt.data_sampler">scgpt.data_sampler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.html#module-scgpt.loss">scgpt.loss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.html#module-scgpt.preprocess">scgpt.preprocess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scgpt.html#module-scgpt.trainer">scgpt.trainer</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">single-cell gpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="scgpt.html">scgpt package</a></li>
+      <li class="breadcrumb-item active">scgpt.tasks package</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scgpt/scgpt.tasks.rst.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scgpt-tasks-package">
+<h1>scgpt.tasks package<a class="headerlink" href="#scgpt-tasks-package" title="Link to this heading"></a></h1>
+<section id="module-scgpt.tasks.grn">
+<span id="scgpt-tasks-grn"></span><h2>scgpt.tasks.grn<a class="headerlink" href="#module-scgpt.tasks.grn" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scgpt.tasks.grn.</span></span><span class="sig-name descname"><span class="pre">GeneEmbedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embeddings</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Mapping</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding" title="Link to this definition"></a></dt>
+<dd><p>基类：<code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.average_vector_results">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">average_vector_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vec2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.average_vector_results"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.average_vector_results" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.cluster_definitions_as_df">
+<span class="sig-name descname"><span class="pre">cluster_definitions_as_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.cluster_definitions_as_df"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.cluster_definitions_as_df" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.compute_similarities">
+<span class="sig-name descname"><span class="pre">compute_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.compute_similarities"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.compute_similarities" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.generate_network">
+<span class="sig-name descname"><span class="pre">generate_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.generate_network"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.generate_network" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.generate_vector">
+<span class="sig-name descname"><span class="pre">generate_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.generate_vector"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.generate_vector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.generate_weighted_vector">
+<span class="sig-name descname"><span class="pre">generate_weighted_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.generate_weighted_vector"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.generate_weighted_vector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.get_adata">
+<span class="sig-name descname"><span class="pre">get_adata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.get_adata"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.get_adata" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.get_metagenes">
+<span class="sig-name descname"><span class="pre">get_metagenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.get_metagenes"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.get_metagenes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.get_similar_genes">
+<span class="sig-name descname"><span class="pre">get_similar_genes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.get_similar_genes"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.get_similar_genes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.plot_metagene">
+<span class="sig-name descname"><span class="pre">plot_metagene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Gene</span> <span class="pre">Embedding'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.plot_metagene"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.plot_metagene" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.plot_metagenes_scores">
+<span class="sig-name descname"><span class="pre">plot_metagenes_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metagenes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.plot_metagenes_scores"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.plot_metagenes_scores" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.plot_similarities">
+<span class="sig-name descname"><span class="pre">plot_similarities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gene</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_genes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.plot_similarities"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.plot_similarities" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.read_embedding">
+<span class="sig-name descname"><span class="pre">read_embedding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.read_embedding"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.read_embedding" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.read_vector">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.read_vector"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.read_vector" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scgpt.tasks.grn.GeneEmbedding.score_metagenes">
+<span class="sig-name descname"><span class="pre">score_metagenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metagenes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scgpt/tasks/grn.html#GeneEmbedding.score_metagenes"><span class="viewcode-link"><span class="pre">[源代码]</span></span></a><a class="headerlink" href="#scgpt.tasks.grn.GeneEmbedding.score_metagenes" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-scgpt.tasks">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-scgpt.tasks" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="scgpt.scbank.html" class="btn btn-neutral float-left" title="scgpt.scbank package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="scgpt.tokenizer.html" class="btn btn-neutral float-right" title="scgpt.tokenizer package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, qiliu。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

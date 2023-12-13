@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>贡献 &mdash; single-cell gpt 0.0.1 文档</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5a0213dc"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../_static/translations.js?v=beaddf03"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../genindex.html" />
+    <link rel="search" title="搜索" href="../search.html" />
+    <link rel="next" title="scgpt package" href="../scgpt/scgpt.html" />
+    <link rel="prev" title="教程" href="../tutorials/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            single-cell gpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">教程</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">贡献</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ghddi">对于GHDDI的同事</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#vs-codecluster">VS Code远程连接Cluster (推荐)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conda">激活Conda环境</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../scgpt/scgpt.html">scgpt package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">single-cell gpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">贡献</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/contributing/index.md.txt" rel="nofollow"> 查看页面源码</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>贡献<a class="headerlink" href="#id1" title="Link to this heading"></a></h1>
+<p>欢迎为本项目贡献自己的才智，例如扩展模型的应用场景和进行有针对性的改进。</p>
+<section id="ghddi">
+<h2>对于GHDDI的同事<a class="headerlink" href="#ghddi" title="Link to this heading"></a></h2>
+<p>在cluster上已经搭建好了项目运行所需的环境，推荐直接在上面进行开发。</p>
+<section id="vs-codecluster">
+<h3>VS Code远程连接Cluster (推荐)<a class="headerlink" href="#vs-codecluster" title="Link to this heading"></a></h3>
+<p>先下载VS Code，远程连接cluster，步骤如下：</p>
+<ol class="arabic simple">
+<li><p>下载VS Code: https://code.visualstudio.com/</p></li>
+<li><p>打开VS Code, 点击侧边栏的扩展</p>
+<ul class="simple">
+<li><p>搜索框中输入ssh, 下载Remote SSH，并配置服务器[2],</p></li>
+<li><p>.ssh/config内容参考下图, 将其中的用户名(<code class="docutils literal notranslate"><span class="pre">qiliu02</span></code>)改成自己的</p></li>
+</ul>
+</li>
+<li><p>在VS Code中连接远程服务器</p>
+<ul class="simple">
+<li><p>点击侧边栏的”远程资源管理器”</p></li>
+<li><p>连接刚才配置好的服务器，选择在当前/新的窗口打开</p></li>
+<li><p>左下角显示已经连接后，选择侧边栏”打开文件夹”，打开cluster中想要创建项目的路径，或者已经存在的路径
+后续就可以直接在cluster上进行开发了.</p></li>
+</ul>
+</li>
+</ol>
+<p><img alt="安装RemoteSSH扩展" src="../_images/install_remote_ssh_plugin.png" /></p>
+<p><img alt="remote ssh的config" src="../_images/remote_ssh_config.png" /></p>
+<p><img alt="连接server" src="../_images/connect_server.png" /></p>
+<p><img alt="打开文件夹" src="../_images/open_folder.png" /></p>
+</section>
+<section id="conda">
+<h3>激活Conda环境<a class="headerlink" href="#conda" title="Link to this heading"></a></h3>
+<p>安装好VS Code和远程连接好Cluster后，下面安装conda，并激活scGPT的Conda env.
+假如当前个人账号没有安装Conda的话，建议先安装[3]，如使用下面命令：</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>wget<span class="w"> </span>https://repo.anaconda.com/archive/Anaconda3-2023.07-2-Linux-x86_64.sh
+bash<span class="w"> </span>./Anaconda3-2023.07-2-Linux-x86_64.sh
+</pre></div>
+</div>
+<p>101服务器上已经安装好了用于使用scGPT的环境, 可选Chen Liang (梁忱) 提供的环境(python3.10)：</p>
+<ul class="simple">
+<li><p>Python解释器： /home/cliang02/work/bin/cre-python</p></li>
+<li><p>Conda环境：/home/cliang02/work/software/common/proglang/mambaforge/envs/cre</p></li>
+</ul>
+<p>或者Qi Liu (刘奇)提供的环境 (python3.7)：</p>
+<ul class="simple">
+<li><p>Conda环境：/home/qiliu02/miniconda3/envs/flash-attn</p></li>
+</ul>
+<p>新建Terminal后，可以输入命令激活：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">cliang02</span><span class="o">/</span><span class="n">work</span><span class="o">/</span><span class="n">software</span><span class="o">/</span><span class="n">common</span><span class="o">/</span><span class="n">proglang</span><span class="o">/</span><span class="n">mambaforge</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">cre</span>
+<span class="c1"># or</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">qiliu02</span><span class="o">/</span><span class="n">miniconda3</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">flash</span><span class="o">-</span><span class="n">attn</span>
+</pre></div>
+</div>
+<p>就切换到了我们运行scGPT的环境了.</p>
+<p>注意：conda env中没有安装 <code class="docutils literal notranslate"><span class="pre">scgpt</span></code>，而是在项目中源码安装scGPT，这是为了随时保持最新和方便修改源码. 后面的预处理脚本用sys.path.append的方式引用了源码包，若有相关问题，可以联系Qi Liu.</p>
+<p><img alt="VS Code新建终端" src="../_images/new_terminal.png" /></p>
+<p><img alt="激活scgpt运行的conda环境" src="../_images/conda_env.png" /></p>
+<p><strong>参考</strong></p>
+<ol class="arabic simple">
+<li><p><a class="reference external" href="https://code.visualstudio.com/">VS Code</a></p></li>
+<li><p><a class="reference external" href="https://code.visualstudio.com/docs/remote/ssh#_getting-started">Remote Development using SSH</a></p></li>
+<li><p><a class="reference external" href="https://www.anaconda.com/download/">Anaconda Download</a></p></li>
+<li><p><a class="reference external" href="https://git-scm.com/downloads">Git Download</a></p></li>
+<li><p><a class="reference external" href="https://github.com/bowang-lab/scGPT">scGPT</a></p></li>
+<li><p><a class="reference external" href="https://github.com/bowang-lab/scGPT/tree/main/tutorials">scGPT tutorials</a></p></li>
+</ol>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="页脚">
+        <a href="../tutorials/index.html" class="btn btn-neutral float-left" title="教程" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> 上一页</a>
+        <a href="../scgpt/scgpt.html" class="btn btn-neutral float-right" title="scgpt package" accesskey="n" rel="next">下一页 <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, qiliu。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

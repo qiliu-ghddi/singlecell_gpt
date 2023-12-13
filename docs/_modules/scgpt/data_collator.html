@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="zh-CN" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scgpt.data_collator &mdash; single-cell gpt 0.0.1 文档</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5a0213dc"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../_static/translations.js?v=beaddf03"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="索引" href="../../genindex.html" />
+    <link rel="search" title="搜索" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            single-cell gpt
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="搜索文档" aria-label="搜索文档" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="导航菜单">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">安装</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">教程</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing/index.html">贡献</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../scgpt/scgpt.html">scgpt package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="移动版导航菜单" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">single-cell gpt</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="页面导航">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">模块代码</a></li>
+      <li class="breadcrumb-item active">scgpt.data_collator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>scgpt.data_collator 源代码</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.preprocess</span> <span class="kn">import</span> <span class="n">binning</span>
+
+
+<div class="viewcode-block" id="DataCollator">
+<a class="viewcode-back" href="../../scgpt/scgpt.html#scgpt.data_collator.DataCollator">[文档]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">DataCollator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Data collator for the mask value learning task. It pads the sequences to</span>
+<span class="sd">    the maximum length in the batch and masks the gene expression values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        do_padding (:obj:`bool`): whether to pad the sequences to the max length.</span>
+<span class="sd">        pad_token_id (:obj:`int`, optional): the token id to use for padding.</span>
+<span class="sd">            This is required if do_padding is True.</span>
+<span class="sd">        pad_value (:obj:`int`): the value to use for padding the expression</span>
+<span class="sd">            values to the max length.</span>
+<span class="sd">        do_mlm (:obj:`bool`): whether to do masking with MLM.</span>
+<span class="sd">        do_binning (:obj:`bool`): whether to bin the expression values.</span>
+<span class="sd">        mlm_probability (:obj:`float`): the probability of masking with MLM.</span>
+<span class="sd">        mask_value (:obj:`int`): the value to fill at the expression postions</span>
+<span class="sd">            that are masked.</span>
+<span class="sd">        max_length (:obj:`int`, optional): the maximum length of the sequences.</span>
+<span class="sd">            This is required if do_padding is True.</span>
+<span class="sd">        sampling (:obj:`bool`): whether to do sampling instead of truncation if</span>
+<span class="sd">            length &gt; max_length.</span>
+<span class="sd">        reserve_keys (:obj:`List[str]`, optional): a list of keys in the examples</span>
+<span class="sd">            to reserve in the output dictionary. Default to []. These fields</span>
+<span class="sd">            will be kept unchanged in the output.</span>
+<span class="sd">        keep_first_n_tokens (:obj:`int`): the number of tokens in the beginning</span>
+<span class="sd">            of the sequence to keep unchanged from sampling. This is useful when</span>
+<span class="sd">            special tokens have been added to the beginning of the sequence.</span>
+<span class="sd">            Default to 1.</span>
+<span class="sd">        data_style (:obj:`str`): the style of the data. If &quot;pcpt&quot;, the data is</span>
+<span class="sd">            masked and padded for perception training. If &quot;gen&quot;, only the gene</span>
+<span class="sd">            tokens are provided, but not the expression values, for pure generative</span>
+<span class="sd">            training setting. If &quot;both&quot;, the output will contain both fields above.</span>
+<span class="sd">            Choices: &quot;pcpt&quot;, &quot;gen&quot;, &quot;both&quot;. Default to &quot;pcpt&quot;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">do_padding</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">pad_token_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pad_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">do_mlm</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">do_binning</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">mlm_probability</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.15</span>
+    <span class="n">mask_value</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">max_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sampling</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">reserve_keys</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+    <span class="n">keep_first_n_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">data_style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pcpt&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_padding</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pad_token_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`pad_token_id` is required if `do_padding`.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`max_length` is required if `do_padding`.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`mlm_probability` must be between 0 and 1.&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`mlm_probability` must be between 0 and 1.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`mlm_probability` must be a float or iterable of floats.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;`keep_first_n_tokens` must be between 0 and `max_length` &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="si">}</span><span class="s2">).&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_style</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;pcpt&quot;</span><span class="p">,</span> <span class="s2">&quot;gen&quot;</span><span class="p">,</span> <span class="s2">&quot;both&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;`data_style` must be one of &#39;pcpt&#39;, &#39;gen&#39;, &#39;both&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            examples (:obj:`List[Dict[str, torch.Tensor]]`): a list of data dicts.</span>
+<span class="sd">                Each dict is for one cell. It contains multiple 1 dimensional tensors</span>
+<span class="sd">                like the following exmaple:</span>
+<span class="sd">                    {&#39;id&#39;: tensor(184117),</span>
+<span class="sd">                    &#39;genes&#39;: tensor([36572, 17868, ..., 17072]),</span>
+<span class="sd">                    &#39;expressions&#39;: tensor([ 0.,  2., ..., 18.])}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`Dict[str, torch.Tensor]`: a dict of tensors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span><span class="p">),</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;reserve_keys must be a subset of the keys in the examples. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span><span class="si">}</span><span class="s2"> but expected keys in </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_style</span> <span class="o">==</span> <span class="s2">&quot;pcpt&quot;</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_pcpt</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_style</span> <span class="o">==</span> <span class="s2">&quot;gen&quot;</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_gen</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_style</span> <span class="o">==</span> <span class="s2">&quot;both&quot;</span><span class="p">:</span>
+            <span class="n">data_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_both</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
+
+        <span class="c1"># add reserved keys</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reserve_keys</span><span class="p">:</span>
+            <span class="n">data_</span> <span class="o">=</span> <span class="p">[</span><span class="n">example</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">]</span>
+            <span class="n">data_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">data_</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">data_dict</span>
+
+    <span class="k">def</span> <span class="nf">_call_pcpt</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Each example is like:</span>
+<span class="sd">            {&#39;id&#39;: tensor(184117),</span>
+<span class="sd">            &#39;genes&#39;: tensor([36572, 17868, ..., 17072]),</span>
+<span class="sd">            &#39;expressions&#39;: tensor([ 0.,  2., ..., 18.])}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            examples (:obj:`List[Dict[str, torch.Tensor]]`): a list of examples.</span>
+<span class="sd">                Each example is a dictionary of tensors.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            :obj:`Dict[str, torch.Tensor]`: a dictionary of tensors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ne">NotImplementedError</span>
+
+        <span class="n">device</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="n">max_ori_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">)</span>
+        <span class="n">_max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="k">if</span> <span class="n">max_ori_len</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="k">else</span> <span class="n">max_ori_len</span>
+
+        <span class="c1"># pad and truncate</span>
+        <span class="n">padded_genes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">padded_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">)):</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span>
+            <span class="n">expressions</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;expressions&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_binning</span><span class="p">:</span>
+                <span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">binning</span><span class="p">(</span>
+                    <span class="n">row</span><span class="o">=</span><span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:],</span>
+                    <span class="n">n_bins</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_or_truncate_plus_pad</span><span class="p">(</span>
+                <span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">_max_length</span>
+            <span class="p">)</span>  <span class="c1"># torch tensors of length _max_length</span>
+            <span class="n">padded_genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>
+            <span class="n">padded_expressions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expressions</span><span class="p">)</span>
+
+        <span class="n">padded_genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_genes</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">padded_expressions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_expressions</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;gene&quot;</span><span class="p">:</span> <span class="n">padded_genes</span><span class="p">,</span>
+            <span class="s2">&quot;expr&quot;</span><span class="p">:</span> <span class="n">padded_expressions</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="c1"># mask</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_mlm</span><span class="p">:</span>
+            <span class="n">masked_expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span><span class="p">(</span>
+                <span class="n">padded_expressions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">masked_expressions</span> <span class="o">=</span> <span class="n">padded_expressions</span>
+        <span class="n">data_dict</span><span class="p">[</span><span class="s2">&quot;masked_expr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">masked_expressions</span>
+
+        <span class="k">return</span> <span class="n">data_dict</span>
+
+    <span class="k">def</span> <span class="nf">_call_gen</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">examples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will simply return the gene ids, with needed padding. There is</span>
+<span class="sd">        no masking for pure generative training, and no input of expr values.</span>
+
+<span class="sd">        Each example is like:</span>
+<span class="sd">            {&#39;id&#39;: tensor(184117),</span>
+<span class="sd">            &#39;genes&#39;: tensor([36572, 17868, ..., 17072])}</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, torch.Tensor]: a dict of tensors.</span>
+<span class="sd">            Example:</span>
+<span class="sd">                {&#39;pcpt_gene&#39;: tensor([[36572, 17868, ..., 17072],</span>
+<span class="sd">                                        [36572, 17868, ..., 17072],</span>
+<span class="sd">                                        ...,</span>
+<span class="sd">                                        [36572, 17868, ..., 17072]]),</span>
+<span class="sd">                &#39;pcpt_expr&#39;: tensor([[ 0.,  2., ..., 18.],</span>
+<span class="sd">                                        [ 0.,  2., ..., 18.],</span>
+<span class="sd">                                        ...,</span>
+<span class="sd">                                        [ 0.,  2., ..., 18.]])}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ne">NotImplementedError</span>
+
+        <span class="n">device</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">device</span>
+
+        <span class="n">max_ori_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">)</span>
+        <span class="n">_max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="k">if</span> <span class="n">max_ori_len</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="k">else</span> <span class="n">max_ori_len</span>
+
+        <span class="c1"># pad and truncate</span>
+        <span class="n">padded_pcpt_genes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">padded_pcpt_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">)):</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span>
+            <span class="n">expressions</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;expressions&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_binning</span><span class="p">:</span>
+                <span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">binning</span><span class="p">(</span>
+                    <span class="n">row</span><span class="o">=</span><span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:],</span>
+                    <span class="n">n_bins</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span>  <span class="c1"># FIXME: replace with self.n_bins</span>
+                <span class="p">)</span>
+            <span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_or_truncate_plus_pad</span><span class="p">(</span>
+                <span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">_max_length</span>
+            <span class="p">)</span>
+            <span class="n">padded_pcpt_genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span>
+            <span class="n">padded_pcpt_expressions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expressions</span><span class="p">)</span>
+
+        <span class="n">padded_pcpt_genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_pcpt_genes</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">padded_pcpt_expressions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_pcpt_expressions</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;pcpt_gene&quot;</span><span class="p">:</span> <span class="n">padded_pcpt_genes</span><span class="p">,</span>
+            <span class="s2">&quot;pcpt_expr&quot;</span><span class="p">:</span> <span class="n">padded_pcpt_expressions</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">data_dict</span>
+
+    <span class="k">def</span> <span class="nf">_call_both</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">examples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]],</span>
+        <span class="n">gen_prob</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method will split the input into the peception part and the generation</span>
+<span class="sd">        part. The perception part will be processed into gene ids and expr values,</span>
+<span class="sd">        and the generation part will be processed into gene ids only.</span>
+
+<span class="sd">        By default, the mlm_probability will be used to select the genese assigned to</span>
+<span class="sd">        the generation part.</span>
+
+<span class="sd">        Each example is like:</span>
+<span class="sd">            {&#39;id&#39;: tensor(184117),</span>
+<span class="sd">            &#39;genes&#39;: tensor([36572, 17868, ..., 17072]),</span>
+<span class="sd">            &#39;expressions&#39;: tensor([ 0.,  2., ..., 18.])}</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            gen_prob (float, optional): the probability of a gene being assigned to</span>
+<span class="sd">                the generation part. If not provided, the mlm_probability will be used.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dict[str, torch.Tensor]: a dict of tensors.</span>
+<span class="sd">            Example:</span>
+<span class="sd">                {&#39;pcpt_gene&#39;: tensor([[36572, 17868, ..., 17072],</span>
+<span class="sd">                                        [36572, 17868, ..., 17072],</span>
+<span class="sd">                                        ...,</span>
+<span class="sd">                                        [36572, 17868, ..., 17072]]),</span>
+<span class="sd">                &#39;pcpt_expr&#39;: tensor([[ 0.,  2., ..., 18.],</span>
+<span class="sd">                                        [ 0.,  2., ..., 18.],</span>
+<span class="sd">                                        ...,</span>
+<span class="sd">                                        [ 0.,  2., ..., 18.]]),</span>
+<span class="sd">                &#39;gen_gene&#39;: tensor([[36573, 17869, ..., 17073],</span>
+<span class="sd">                                        [36573, 17869, ..., 17073],</span>
+<span class="sd">                                        ...,</span>
+<span class="sd">                                        [36573, 17869, ..., 17073]]),</span>
+<span class="sd">                &#39;gen_expr_target&#39;: tensor([[ 1.,  3., ..., 19.],</span>
+<span class="sd">                                        [ 1.,  3., ..., 19.],</span>
+<span class="sd">                                        ...,</span>
+<span class="sd">                                        [ 1.,  3., ..., 19.]])}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Mapping</span><span class="p">):</span>
+            <span class="k">return</span> <span class="ne">NotImplementedError</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_mlm</span><span class="p">:</span>
+            <span class="c1"># if not doing mlm, then the perceptrual part is the whole input</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call_gen</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">gen_prob</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">gen_prob</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mlm_probability</span><span class="p">()</span>
+
+        <span class="c1"># device = examples[0][&quot;genes&quot;].device</span>
+
+        <span class="n">max_ori_len</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">example</span><span class="p">[</span><span class="s2">&quot;genes&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">example</span> <span class="ow">in</span> <span class="n">examples</span><span class="p">)</span>
+        <span class="n">_max_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="k">if</span> <span class="n">max_ori_len</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="k">else</span> <span class="n">max_ori_len</span>
+
+        <span class="n">gen_length</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">_max_length</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span><span class="p">)</span> <span class="o">*</span> <span class="n">gen_prob</span><span class="p">)</span>
+        <span class="n">pcpt_length</span> <span class="o">=</span> <span class="n">_max_length</span> <span class="o">-</span> <span class="n">gen_length</span>  <span class="c1"># perception part length</span>
+
+        <span class="c1"># pad and truncate</span>
+        <span class="n">padded_pcpt_genes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">padded_pcpt_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">padded_gen_genes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">padded_gen_expressions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">examples</span><span class="p">)):</span>
+            <span class="n">genes</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;genes&quot;</span><span class="p">]</span>
+            <span class="n">expressions</span> <span class="o">=</span> <span class="n">examples</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;expressions&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_binning</span><span class="p">:</span>
+                <span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">binning</span><span class="p">(</span>
+                    <span class="n">row</span><span class="o">=</span><span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:],</span>
+                    <span class="n">n_bins</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span>
+                <span class="p">)</span>
+
+            <span class="p">(</span>
+                <span class="n">gen_genes</span><span class="p">,</span>
+                <span class="n">gen_expressions</span><span class="p">,</span>
+                <span class="n">pcpt_genes</span><span class="p">,</span>
+                <span class="n">pcpt_expressions</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_split</span><span class="p">(</span>
+                <span class="n">genes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:],</span>
+                <span class="n">expressions</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="p">:],</span>
+                <span class="n">ratio</span><span class="o">=</span><span class="n">gen_prob</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">pcpt_genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">genes</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span><span class="p">],</span> <span class="n">pcpt_genes</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)</span>
+            <span class="n">pcpt_expressions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">expressions</span><span class="p">[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span><span class="p">],</span> <span class="n">pcpt_expressions</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span>
+            <span class="p">)</span>
+
+            <span class="n">pcpt_genes</span><span class="p">,</span> <span class="n">pcpt_expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_or_truncate_plus_pad</span><span class="p">(</span>
+                <span class="n">pcpt_genes</span><span class="p">,</span> <span class="n">pcpt_expressions</span><span class="p">,</span> <span class="n">pcpt_length</span>
+            <span class="p">)</span>  <span class="c1"># torch tensors of length pcpt_length</span>
+            <span class="n">padded_pcpt_genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pcpt_genes</span><span class="p">)</span>
+            <span class="n">padded_pcpt_expressions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pcpt_expressions</span><span class="p">)</span>
+
+            <span class="n">gen_genes</span><span class="p">,</span> <span class="n">gen_expressions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_or_truncate_plus_pad</span><span class="p">(</span>
+                <span class="n">gen_genes</span><span class="p">,</span> <span class="n">gen_expressions</span><span class="p">,</span> <span class="n">gen_length</span>
+            <span class="p">)</span>  <span class="c1"># torch tensors of length gen_length</span>
+            <span class="n">padded_gen_genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_genes</span><span class="p">)</span>
+            <span class="n">padded_gen_expressions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gen_expressions</span><span class="p">)</span>
+
+        <span class="n">padded_pcpt_genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_pcpt_genes</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">padded_pcpt_expressions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_pcpt_expressions</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">padded_gen_genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_gen_genes</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">padded_gen_expressions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">padded_gen_expressions</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;pcpt_gene&quot;</span><span class="p">:</span> <span class="n">padded_pcpt_genes</span><span class="p">,</span>
+            <span class="s2">&quot;pcpt_expr&quot;</span><span class="p">:</span> <span class="n">padded_pcpt_expressions</span><span class="p">,</span>
+            <span class="s2">&quot;gen_gene&quot;</span><span class="p">:</span> <span class="n">padded_gen_genes</span><span class="p">,</span>
+            <span class="s2">&quot;gen_expr_target&quot;</span><span class="p">:</span> <span class="n">padded_gen_expressions</span><span class="p">,</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">data_dict</span>
+
+    <span class="k">def</span> <span class="nf">_random_split</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">arrays</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">ratio</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Randomly split the arrays into two parts. The first part will have the</span>
+<span class="sd">        length of `ratio * length`, and the second part will have the length of</span>
+<span class="sd">        `(1 - ratio) * length`. When multiple arrays are provided, they are supposed</span>
+<span class="sd">        to have the same length.</span>
+
+<span class="sd">        This method reflects the behavior of `sklearn.model_selection.train_test_split`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            *arrays (torch.Tensor): the arrays to be split.</span>
+<span class="sd">            ratio (float): the ratio of the first part.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[torch.Tensor, ...]: the split arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arrays</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span>
+            <span class="p">),</span> <span class="s2">&quot;The arrays must have the same length.&quot;</span>
+
+        <span class="n">length</span> <span class="o">=</span> <span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">split_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">length</span> <span class="o">*</span> <span class="n">ratio</span><span class="p">)</span>
+
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">arrays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">first_part_indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[:</span><span class="n">split_index</span><span class="p">]</span>
+        <span class="n">second_part_indices</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">split_index</span><span class="p">:]</span>
+
+        <span class="n">first_parts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">first_part_indices</span><span class="p">]</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">)</span>
+        <span class="n">second_parts</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">array</span><span class="p">[</span><span class="n">second_part_indices</span><span class="p">]</span> <span class="k">for</span> <span class="n">array</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">first_parts</span> <span class="o">+</span> <span class="n">second_parts</span>
+
+<div class="viewcode-block" id="DataCollator.get_mlm_probability">
+<a class="viewcode-back" href="../../scgpt/scgpt.html#scgpt.data_collator.DataCollator.get_mlm_probability">[文档]</a>
+    <span class="k">def</span> <span class="nf">get_mlm_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the mlm probability for the current step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="c1"># random choose a probability</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;mlm_probability must be a float or a list of floats, &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;but got </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mlm_probability</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_mask</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">expressions</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">keep_first_n_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Mask the expression values with MLM.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">keep_first_n_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">result_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mask</span><span class="p">(</span>
+                <span class="n">expressions</span><span class="p">[:,</span> <span class="n">keep_first_n_tokens</span><span class="p">:],</span>
+                <span class="n">keep_first_n_tokens</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">expressions</span><span class="p">[:,</span> <span class="p">:</span><span class="n">keep_first_n_tokens</span><span class="p">],</span> <span class="n">result_</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">device</span> <span class="o">=</span> <span class="n">expressions</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="n">expressions</span><span class="o">.</span><span class="n">shape</span>
+
+        <span class="n">probability_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mlm_probability</span><span class="p">())</span>
+        <span class="c1"># set padded postion probability to 0</span>
+        <span class="n">probability_matrix</span><span class="p">[</span><span class="n">expressions</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pad_value</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">probability_matrix</span><span class="p">[:,</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">probability_matrix</span><span class="p">)</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">masked_expressions</span> <span class="o">=</span> <span class="n">expressions</span><span class="o">.</span><span class="n">masked_fill</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">masked_expressions</span>
+
+    <span class="k">def</span> <span class="nf">_sample_or_truncate_plus_pad</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">genes</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span>
+        <span class="n">expressions</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressions</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span> <span class="o">==</span> <span class="n">max_length</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>  <span class="c1"># sample or truncate</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sampling</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">genes</span><span class="p">[:</span><span class="n">max_length</span><span class="p">],</span> <span class="n">expressions</span><span class="p">[:</span><span class="n">max_length</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># pad</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pad</span><span class="p">(</span><span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">genes</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span>
+        <span class="n">expressions</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="c1"># NOTE: the fastest way to sample in torch has been benchmarked here</span>
+        <span class="c1"># https://discuss.pytorch.org/t/torch-equivalent-of-numpy-random-choice/16146/19</span>
+        <span class="c1"># it shows the randperm on gpu is the fastest.</span>
+        <span class="c1"># NOTE: also, the current implementation permute the orders of the genes</span>
+        <span class="c1"># and expressions, although it is probably a nice argmentation.</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">device</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)[:</span><span class="n">max_length</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">genes</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">expressions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+        <span class="c1"># keep the first n tokens unchanged</span>
+        <span class="n">_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">keep_first_n_tokens</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">)</span> <span class="o">-</span> <span class="n">_n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)[:</span> <span class="n">max_length</span> <span class="o">-</span> <span class="n">_n</span><span class="p">]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">_n</span><span class="p">),</span> <span class="n">indices</span> <span class="o">+</span> <span class="n">_n</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">genes</span><span class="p">[</span><span class="n">indices</span><span class="p">],</span> <span class="n">expressions</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_pad</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">genes</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span>
+        <span class="n">expressions</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+        <span class="n">max_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">genes</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">genes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">genes</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">max_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes</span><span class="p">),),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pad_token_id</span><span class="p">,</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">genes</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">expressions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="n">expressions</span><span class="p">,</span>
+                <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+                    <span class="p">(</span><span class="n">max_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">expressions</span><span class="p">),),</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">pad_value</span><span class="p">,</span>
+                    <span class="n">dtype</span><span class="o">=</span><span class="n">expressions</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+                    <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+                <span class="p">),</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">genes</span><span class="p">,</span> <span class="n">expressions</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; 版权所有 2023, qiliu。</p>
+  </div>
+
+  利用 <a href="https://www.sphinx-doc.org/">Sphinx</a> 构建，使用的 
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">主题</a>
+    由 <a href="https://readthedocs.org">Read the Docs</a> 开发.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
