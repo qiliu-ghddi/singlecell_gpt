@@ -32,7 +32,7 @@ Pretraining single-cell LLMs.
 ***Perturbation Prediction***
 
 - **CellOT** (**NatureMethods**): Bunne, C., Stark, S. G., Gut, G., Del Castillo, J. S., Levesque, M., Lehmann, K. V., ... & Rätsch, G. (2023). Learning single-cell perturbation responses using neural optimal transport. Nature methods, 1-10.
-- **GERAS** (**NatureBiotechnology**; **JureLeskovec**): Roohani, Y., Huang, K., & Leskovec, J. (2023). Predicting transcriptional outcomes of novel multigene perturbations with gears. Nature Biotechnology, 1-9. [PDF]( https://www.nature.com/articles/s41587-023-01905-6 ); [GitHub] (https://github.com/snap-stanford/GEARS )
+- **GERAS** (**NatureBiotechnology**; **JureLeskovec**): Roohani, Y., Huang, K., & Leskovec, J. (2023). Predicting transcriptional outcomes of novel multigene perturbations with gears. Nature Biotechnology, 1-9. [PDF]( https://www.nature.com/articles/s41587-023-01905-6 ); [GitHub](https://github.com/snap-stanford/GEARS )
 
 (Drug Perturbation Prediction)
 
@@ -40,7 +40,7 @@ Pretraining single-cell LLMs.
 
 - **CPA** (**Cited by 28**; Facebook;) Lotfollahi, M., Klimovskaia Susmelj, A., De Donno, C., Hetzel, L., Ji, Y., Ibarra, I. L., ... & Theis, F. J. (2023). Predicting cellular responses to complex perturbations in high‐throughput screens. Molecular Systems Biology, e11517. [Web](https://www.embopress.org/doi/full/10.15252/msb.202211517 ) [GitHub](https://github.com/theislab/cpa ) [GitHub-reproducibility](https://github.com/theislab/cpa-reproducibility/tree/main/notebooks)
 
-- - CPA (Cited by 28; Facebook;): Lotfollahi, M., Susmelj, A. K., De Donno, C., Ji, Y., Ibarra, I. L., Wolf, F. A., ... & Lopez-Paz, D. (2021). Learning interpretable cellular responses to complex perturbations in high-throughput screens. BioRxiv, 2021-04. [GitHub]( http://github.com/facebookresearch/CPA )
+  - CPA (Cited by 28; Facebook;): Lotfollahi, M., Susmelj, A. K., De Donno, C., Ji, Y., Ibarra, I. L., Wolf, F. A., ... & Lopez-Paz, D. (2021). Learning interpretable cellular responses to complex perturbations in high-throughput screens. BioRxiv, 2021-04. [GitHub]( http://github.com/facebookresearch/CPA )
 
 - **OntoVAE**: Doncevic, D., & Herrmann, C. (2023). Biologically informed variational autoencoders allow predictive modeling of genetic and drug-induced perturbations. Bioinformatics, 39(6), btad387. [Web](https://academic.oup.com/bioinformatics/advance-article-abstract/doi/10.1093/bioinformatics/btad387/7199588 ) [GitHub](https://github.com/hdsu-bioquant/onto-vae )
 
@@ -48,7 +48,7 @@ Pretraining single-cell LLMs.
 
 - **chemCPA**  (**Neurips**): Hetzel, L., Böhm, S., Kilbertus, N., Günnemann, S., Lotfollahi, M., & Theis, F. (2022). Predicting single-cell perturbation responses for unseen drugs. arXiv preprint arXiv:2204.13545.，[Web](https://arxiv.org/abs/2204.13545 ) [Supplementary](https://proceedings.neurips.cc/paper_files/paper/2022/file/aa933b5abc1be30baece1d230ec575a7-Supplemental-Conference.pdf ); [GitHub](https://github.com/theislab/chemCPA ) 
 
-- - **chemCPA**: Hetzel, L., Boehm, S., Kilbertus, N., Günnemann, S., & Theis, F. (2022). Predicting cellular responses to novel drug perturbations at a single-cell resolution. Advances in Neural Information Processing Systems, 35, 26711-26722. [PDF](https://openreview.net/pdf?id=vRrFVHxFiXJ ) [GitHub](https://github.com/theislab/chemCPA )
+  - **chemCPA**: Hetzel, L., Boehm, S., Kilbertus, N., Günnemann, S., & Theis, F. (2022). Predicting cellular responses to novel drug perturbations at a single-cell resolution. Advances in Neural Information Processing Systems, 35, 26711-26722. [PDF](https://openreview.net/pdf?id=vRrFVHxFiXJ ) [GitHub](https://github.com/theislab/chemCPA )
 
 - **scGEN** (**NatureMethods**; **Cited by 260**): Lotfollahi, M., Wolf, F. A., & Theis, F. J. (2019). scGen predicts single-cell perturbation responses. Nature methods, 16(8), 715-721. [Web]( https://www.nature.com/articles/s41592-019-0494-8 ); [Code]( https://github.com/theislab/scgen ) & [ Code of paper ]( https://github.com/theislab/scgen-reproducibility )
 
@@ -77,7 +77,7 @@ Pretraining single-cell LLMs.
 
 - Pertpy: Perturbation Analysis in the scverse ecosystem. https://pertpy.readthedocs.io/en/latest/
 
-- - scGen - Perturbation response prediction,[scgen_perturbation_prediction](https://pertpy.readthedocs.io/en/latest/tutorials/notebooks/scgen_perturbation_prediction.html) , [Colab](https://colab.research.google.com/github/theislab/scgen/blob/master/docs/tutorials/scgen_perturbation_prediction.ipynb)
+  - scGen - Perturbation response prediction,[scgen_perturbation_prediction](https://pertpy.readthedocs.io/en/latest/tutorials/notebooks/scgen_perturbation_prediction.html) , [Colab](https://colab.research.google.com/github/theislab/scgen/blob/master/docs/tutorials/scgen_perturbation_prediction.ipynb)
 
 - scGEN, Single cell perturbation prediction, https://github.com/theislab/scgen/ , https://scgen.readthedocs.io/en/stable/tutorials/scgen_perturbation_prediction.html, 
 
