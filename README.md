@@ -25,7 +25,7 @@ Pretraining single-cell LLMs.
 - **scFoundation**: Hao, M., Gong, J., Zeng, X., Liu, C., Guo, Y., Cheng, X., ... & Zhang, X. (2023). Large Scale Foundation Model on Single-cell Transcriptomics. bioRxiv, 2023-05. [Web]( https://www.biorxiv.org/content/10.1101/2023.05.29.542705v4.abstract ); [GitHub]( https://github.com/biomap-research/scFoundation )
 - **GeneFormer**: Theodoris, C. V., Xiao, L., Chopra, A., Chaffin, M. D., Al Sayed, Z. R., Hill, M. C., ... & Ellinor, P. T. (2023). Transfer learning enables predictions in network biology. Nature, 1-9. [Web]( https://www.nature.com/articles/s41586-023-06139-9 ); [Code]( https://huggingface.co/ctheodoris/Geneformer ); 
 - **tGPT**: Shen, H., Liu, J., Hu, J., Shen, X., Zhang, C., Wu, D., ... & Li, X. (2023). Generative pretraining from large-scale transcriptomes for single-cell deciphering. Iscience, 26(5). [PDF]( https://www.cell.com/iscience/pdf/S2589-0042(23)00613-2.pdf )
-- **scBERT** (Nature Machine Intelligence; 2018): Yang, F., Wang, W., Wang, F., Fang, Y., Tang, D., Huang, J., ... & Yao, J. (2022). scBERT as a large-scale pretrained deep language model for cell type annotation of single-cell RNA-seq data. Nature Machine Intelligence, 4(10), 852-866. [Paper]: https://www.nature.com/articles/s42256-022-00534-z
+- **scBERT** (Nature Machine Intelligence; 2022): Yang, F., Wang, W., Wang, F., Fang, Y., Tang, D., Huang, J., ... & Yao, J. (2022). scBERT as a large-scale pretrained deep language model for cell type annotation of single-cell RNA-seq data. Nature Machine Intelligence, 4(10), 852-866. [Paper]: https://www.nature.com/articles/s42256-022-00534-z
 
 
 
