@@ -3,9 +3,11 @@ import sys
 import argparse
 import json
 import time
+import warnings
 from datetime import timedelta
 from pathlib import Path
 from typing import List, Tuple, Dict, Union, Optional
+
 
 import scanpy as sc
 import numpy as np
@@ -27,6 +29,7 @@ from scgpt.tokenizer import GeneVocab, random_mask_value
 from scgpt.scbank import DataBank
 from scgpt.utils import MainProcessOnly
 from scgpt import logger
+warnings.filterwarnings("ignore")
 
 
 # torch.autograd.set_detect_anomaly(True)
@@ -35,6 +38,7 @@ sc.set_figure_params(figsize=(4, 4))
 sc.settings.verbosity = "debug"
 scg.utils.set_seed(42)
 
+# %%
 # argparse
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -150,7 +154,7 @@ parser.add_argument(
 parser.add_argument(
     "--local-rank",
     type=int,
-    default=-1,
+    default=0,  # -1 为非分布式训练模式, 其他为设置分布式训练的rank
     help="The local rank of the process for using the torch.distributed.launch "
     "utility. Will be -1 if not running in distributed model.",
 )
@@ -203,11 +207,13 @@ parser.add_argument(
 parser.add_argument(
     "--no-cls",
     action="store_true",
+    # default=True,
     help="Whether to deactivate the classification loss. Default is False.",
 )
 parser.add_argument(
     "--no-cce",
     action="store_true",
+    # default=True,
     help="Whether to deactivate the contrastive cell embedding objective. "
     "Default is False.",
 )
@@ -276,26 +282,30 @@ parser.add_argument(
     default=1000,
     help="The interval for saving the model. Default is 1000.",
 )
+parser.add_argument(
+    "--world-size",
+    type=int,
+    help="World size",
+)
 
-
-if scg.utils.isnotebook():
-    args = parser.parse_args(
-        args=[
-            "-d",
-            "/scratch/hdd001/home/haotian/datasets/cellxgene/3faad104-2ab8-4434-816d-474d8d2641db.scb",
-            "-s",
-            "./save/tmp",
-            "--batch-size",
-            "16",
-            "--max-seq-len",
-            "512",
-            "--trunc-by-sample",
-            "--no-cls",
-            "--no-cce",
-        ]
-    )
-else:
-    args = parser.parse_args()
+# if scg.utils.isnotebook():
+#     args = parser.parse_args(
+#         args=[
+#             "-d",
+#             "/scratch/hdd001/home/haotian/datasets/cellxgene/3faad104-2ab8-4434-816d-474d8d2641db.scb",
+#             "-s",
+#             "./save/tmp",
+#             "--batch-size",
+#             "16",
+#             "--max-seq-len",
+#             "512",
+#             "--trunc-by-sample",
+#             "--no-cls",
+#             "--no-cce",
+#         ]
+#     )
+# else:
+args = parser.parse_args()
 
 
 # args.local_rank = os.environ['LOCAL_RANK']
@@ -324,20 +334,26 @@ if args.training_tasks in ["gen", "both"]:
     args.mask_ratio = [0.25, 0.50, 0.75]
 
 # %% settings
-print(args)
+print("="*100)
+print("==== args")
+print(json.dumps(vars(args), indent=4))
 
 special_tokens = [args.pad_token, "<cls>", "<eoc>"]
+
 USE_CLS = not args.no_cls
 USE_CCE = not args.no_cce
+
+
 MVC = True
 USE_GENERATIVE_TRAINING = True if args.training_tasks in ["gen", "both"] else False
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "1,2,3,4,5,6"
 
 IS_DATA_PARALLEL = args.local_rank != -1
 if IS_DATA_PARALLEL:
     # These two lines is to solve issue #1 based on the suggestion from
     # https://discuss.pytorch.org/t/94382
-    os.environ["CUDA_VISIBLE_DEVICES"] = str(args.local_rank)
-
+    # os.environ["CUDA_VISIBLE_DEVICES"] = str(args.local_rank)  # BUG: Only one gpu:0 could be used
     torch.distributed.init_process_group(
         backend="nccl",
         rank=args.local_rank,
@@ -345,9 +361,13 @@ if IS_DATA_PARALLEL:
     )
     # specify device 0 since the CUDA_VISIBLE_DEVICES is set to one GPU
     # https://discuss.pytorch.org/t/67488/4
-    device = torch.device("cuda")
+    
+    device = torch.device(f"cuda:{args.local_rank}")
+    # device = torch.device("cuda:0")
     n_gpu = torch.cuda.device_count()
-    world_size = torch.distributed.get_world_size()
+
+    world_size = torch.distributed.get_world_size() if args.world_size is None else args.world_size
+    print(f"world size: {world_size}")
     logger.info(
         f"device: {device} in world size {world_size}, "
         f"visible gpu(s): {os.environ['CUDA_VISIBLE_DEVICES']}/{n_gpu}"
@@ -355,22 +375,30 @@ if IS_DATA_PARALLEL:
 else:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+logger.info(f"args: {json.dumps(vars(args), indent=4)}")
+logger.info(f"IS_DATA_PARALLEL: {IS_DATA_PARALLEL}")
+
 save_dir = Path(args.save_dir)
+
+print(f"******** 1")
+print(f"args.local_rank: {args.local_rank} {type(args.local_rank)}")
+print(f"args.local_rank: {args.local_rank} {type(args.local_rank)}")
 if args.local_rank in [0, -1]:
     save_dir.mkdir(parents=True, exist_ok=True)
     with open(save_dir / "args.json", "w") as f:
         json.dump(vars(args), f, indent=2)
     # copy all uncommitted changes to the save dir
-    os.system(
-        f"git diff > {str(save_dir / 'git_diff_')}{scg.utils.get_git_commit()}.diff"
-    )
+    # os.system(
+    #     f"git diff > {str(save_dir / 'git_diff_')}{scg.utils.get_git_commit()}.diff"
+    # )
+    
 if IS_DATA_PARALLEL:
     torch.distributed.barrier()
 
 scg.utils.add_file_handler(logger, save_dir / "run.log")
 # log running date and current git commit
 logger.info(f"Running on {time.strftime('%Y-%m-%d %H:%M:%S')}")
-logger.info(f"Current git commit: {scg.utils.get_git_commit()}")
+# logger.info(f"Current git commit: {scg.utils.get_git_commit()}")
 
 writer = SummaryWriter(log_dir=save_dir / "tensorboard")
 if IS_DATA_PARALLEL:
@@ -417,6 +445,22 @@ if args.data_source.endswith("human"):
             tissue_data_path / "all_counts" / "cls_prefix_data.parquet"
         )
         cache_dir = tissue_data_path / "cache"
+
+        # if not cls_prefix_datatable.exists():
+        #     # the large-scale data structure
+        #     db = DataBank.from_path(f"{tissue_data_path}/all_counts")
+        #     raw_dataset = db.main_data.data
+        #     vocab: GeneVocab = db.gene_vocab
+        #     for s in special_tokens:
+        #         if s not in vocab:
+        #             vocab.append_token(s)
+
+        #     if args.local_rank in [0, -1]:
+        #         raw_dataset = _map_append_cls(raw_dataset)
+        #         raw_dataset.to_parquet(cls_prefix_datatable)
+        #     if IS_DATA_PARALLEL:
+        #         torch.distributed.barrier()  # wait for the mapping to finish
+
         tissue_dataset = load_dataset(
             "parquet",
             data_files=str(cls_prefix_datatable),
@@ -458,8 +502,9 @@ elif Path(args.data_source).is_dir() and args.data_source.endswith(".scb"):
         logger.info(f"Loaded {len(raw_dataset)} examples from {cls_prefix_datatable}")
 elif Path(args.data_source).is_dir():
     # collection of parquet files
-    # BUG: if cls_prefix_data.parquet exists
-    parquet_files = [str(f) for f in Path(args.data_source).glob("*.parquet")]
+    # partition_0.datatable.parquet
+    parquet_files = [str(f) for f in Path(args.data_source).glob("*.datatable.parquet")]  # BUG: all_counts路径下中已经包含有 cls_prefix_data.parquet 的时候会出错
+    # parquet_files = [str(f) for f in Path(args.data_source).glob("*.parquet")]
     cache_dir = Path(args.data_source).parent / "cache"
     vocab = GeneVocab.from_file(Path(args.vocab_path))
     for s in special_tokens:
@@ -467,12 +512,7 @@ elif Path(args.data_source).is_dir():
             vocab.append_token(s)
     if USE_CCE or USE_CLS or MVC:
         # load or make the dataset w/ <cls> appended at the beginning
-        
-        cls_prefix_dir = Path(args.data_source).parent / "cls_prefix"
-        cls_prefix_dir.mkdir(exist_ok=True, parents=True)
-        cls_prefix_datatable = Path(cls_prefix_dir) / "cls_prefix_data.parquet"
-        # cls_prefix_datatable = Path(args.data_source) / "cls_prefix_data.parquet"
-        
+        cls_prefix_datatable = Path(args.data_source) / "cls_prefix_data.parquet"
         if not cls_prefix_datatable.exists():
             if args.local_rank in [0, -1]:
                 logger.info(f"Rank {args.local_rank}: Preparing dataset")
@@ -524,6 +564,9 @@ elif args.data_source == "test":  # Using test data
     for s in special_tokens:
         if s not in vocab:
             vocab.append_token(s)
+
+
+
 
 if args.load_model is not None:
     model_dir = Path(args.load_model)
@@ -586,6 +629,7 @@ valid_dataset = raw_dataset["test"]
 logger.info(f"train set number of samples: {len(train_dataset)}, ")
 logger.info(f"valid set number of samples: {len(valid_dataset)}, ")
 
+print(f"******** 3")
 # %% data loading
 # data collator for online padding and sampling
 # make separate two types of input and output
@@ -634,6 +678,43 @@ valid_loader = DataLoader(
 )
 
 
+# %% [markdown]
+"""
+## Notes
+1. TODO: remember the distributed setting
+https://huggingface.co/docs/datasets/v2.3.2/en/process#distributed-usage
+2. [Dataset.format](https://huggingface.co/docs/datasets/v2.3.2/en/process#format) 
+as pytorch conviniently convert to torch.tensors.
+
+    ```python
+    >>> dataset.reset_format()
+    >>> dataset.format
+    {'type': None,
+    'format_kwargs': {},
+    'columns': ['id', 'genes', 'expressions'],
+    'output_all_columns': False}
+    >>> dataset = dataset.with_format(type="pytorch")
+    >>> dataset.format
+    {'type': 'torch',
+    'format_kwargs': {},
+    'columns': ['id', 'genes', 'expressions'],
+    'output_all_columns': False}
+    >>> dataset[0]
+    {'id': tensor(0),
+    'genes': tensor([34797, 16936,  2745,  ..., 17076, 17078, 17072]),
+    'expressions': tensor([1., 1., 1.,  ..., 8., 5., 7.])}
+    ```
+3. Instruction for using with pytorch and achieving the best performance, 
+[here](https://huggingface.co/docs/datasets/v2.3.2/en/use_with_pytorch).
+Some key points: 
+
+    - Format to device cpu or gpu  
+    - Use multiple loading processes
+    - Use a BatchSampler
+    - Personal suggestion: use the format_transform on the fly
+"""
+
+print(f"******** 4")
 # %%
 if USE_CLS:
     celltypes_labels = raw_dataset["celltypes"]
@@ -677,7 +758,26 @@ model = TransformerModel(
     use_fast_transformer=args.fast_transformer,
     fast_transformer_backend="flash",
 )
+if args.load_model is not None:
+    try:
+        model.load_state_dict(torch.load(model_file))
+    except:
+        from collections import OrderedDict
+
+        params = OrderedDict()
+        for key, value in torch.load(model_file).items():
+            params[key.replace("module.", "")] = value
+        model.load_state_dict(params)
 model.to(device)
+logger.info(model)
+if IS_DATA_PARALLEL:
+    model = torch.nn.parallel.DistributedDataParallel(  # 适用于单机多GPU 以及多机多GPU的情况
+        model,
+        device_ids=[device],
+        output_device=device,
+        find_unused_parameters=False,
+    )
+
 
 criterion = masked_mse_loss
 criterion_cls = nn.CrossEntropyLoss()
@@ -704,43 +804,6 @@ else:
 
 # amp fp16 training
 scaler = torch.cuda.amp.GradScaler(enabled=args.fp16)
-
-best_val_loss = float("inf")
-
-if args.load_model is not None:
-    checkpoint = torch.load(model_file, map_location=device)
-    optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-    scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
-    scaler.load_state_dict(checkpoint['scaler_state_dict'])
-    epoch = checkpoint['epoch']
-    best_val_loss = checkpoint['loss']
-    
-    # load model state
-    try:
-        model.load_state_dict(checkpoint['model_state_dict'])        
-        # model.load_state_dict(torch.load(model_file))
-    except:
-        from collections import OrderedDict
-
-        params = OrderedDict()
-        for key, value in torch.load(model_file).items():
-            params[key.replace("module.", "")] = value
-        model.load_state_dict(params)
-        
-logger.info("="*50)
-logger.info(f"optimizer: {optimizer}")
-logger.info(f"scheduler: {scheduler}")
-logger.info(f"scaler: {scaler}")
-logger.info(f"best_val_loss: {best_val_loss}")
-
-# logger.info(model)
-if IS_DATA_PARALLEL:
-    model = torch.nn.parallel.DistributedDataParallel(
-        model,
-        device_ids=[device],
-        output_device=device,
-        find_unused_parameters=False,
-    )
 
 
 def train(model: nn.Module, train_loader: DataLoader, epoch: int) -> None:
@@ -893,15 +956,12 @@ def train(model: nn.Module, train_loader: DataLoader, epoch: int) -> None:
         total_mvc += loss_mvc.item() if MVC else 0.0
         total_error += mre.item()
         if args.local_rank in [0, -1] and batch % log_interval == 0 and batch > 0:
-            try:
-                # Writer logs gradients distribution
-                for name, param in model.named_parameters():
-                    if param.requires_grad and param.grad is not None:
-                        writer.add_histogram(name + "_grad", param.grad, global_iter)
-                        writer.add_histogram(name + "_param", param, global_iter)
-            except Exception as e:
-                print(f"Error {e} while adding histogram")
-            
+            # Writer logs gradients distribution
+            for name, param in model.named_parameters():
+                if param.requires_grad and param.grad is not None:
+                    writer.add_histogram(name + "_grad", param.grad, global_iter)
+                    writer.add_histogram(name + "_param", param, global_iter)
+
             # Log scalar values
             lr = scheduler.get_last_lr()[0]
             ms_per_batch = (time.time() - start_time) * 1000 / log_interval
@@ -1035,73 +1095,34 @@ def eval_and_save(
             writer.add_scalar("valid/mre", val_mre, iter_or_epoch)
 
         global best_val_loss
-
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             # save the best model
             logger.info(f"Saving the best model to {args.save_dir}")
-
-            if isinstance(model, (nn.DataParallel, nn.parallel.DistributedDataParallel)):
-                model_state_dict = model.module.state_dict()
-            else:
-                model_state_dict = model.state_dict()
-            
             torch.save(
-                {
-                    'epoch': epoch,
-                    'model_state_dict': model_state_dict,
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'scheduler_state_dict': scheduler.state_dict(),
-                    'scaler_state_dict': scaler.state_dict(),
-                    'loss': best_val_loss,
-                },
+                model.module.state_dict()
+                if isinstance(
+                    model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
+                )
+                else model.state_dict(),
                 args.save_dir + "/best_model.pt",
             )
 
         if save:
-            if isinstance(model, (nn.DataParallel, nn.parallel.DistributedDataParallel)):
-                model_state_dict = model.module.state_dict()
-            else:
-                model_state_dict = model.state_dict()
-            
             torch.save(
-                {
-                    'epoch': epoch,
-                    'model_state_dict': model_state_dict,
-                    'optimizer_state_dict': optimizer.state_dict(),
-                    'scheduler_state_dict': scheduler.state_dict(),
-                    'scaler_state_dict': scaler.state_dict(),
-                    'loss': best_val_loss,
-                },
+                model.module.state_dict()
+                if isinstance(
+                    model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
+                )
+                else model.state_dict(),
                 args.save_dir + f"/model-{'ep' if is_epoch else ''}{iter_or_epoch}.pt",
             )
-
-        # if val_loss < best_val_loss:
-        #     best_val_loss = val_loss
-        #     # save the best model
-        #     logger.info(f"Saving the best model to {args.save_dir}")
-        #     torch.save(
-        #         model.module.state_dict()
-        #         if isinstance(
-        #             model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
-        #         )
-        #         else model.state_dict(),
-        #         args.save_dir + "/best_model.pt",
-        #     )
-
-        # if save:
-        #     torch.save(
-        #         model.module.state_dict()
-        #         if isinstance(
-        #             model, (nn.DataParallel, nn.parallel.DistributedDataParallel)
-        #         )
-        #         else model.state_dict(),
-        #         args.save_dir + f"/model-{'ep' if is_epoch else ''}{iter_or_epoch}.pt",
-        #     )
     if IS_DATA_PARALLEL:
         torch.distributed.barrier()
 
 
+# %%
+best_val_loss = float("inf")
 logger.info("Start training")
 for epoch in range(1, args.epochs + 1):
     epoch_start_time = time.time()
@@ -1110,3 +1131,43 @@ for epoch in range(1, args.epochs + 1):
 
 writer.flush()
 writer.close()
+
+# # %%
+# # compare with the naive baseline of all ones
+# data_dict = next(iter(valid_loader))
+# input_values = data_dict["masked_expr"]
+# tagert_values = data_dict["expr"]
+# predict_ones = torch.ones(input_values.shape, dtype=torch.float32)
+# mse = masked_mse_loss(predict_ones, tagert_values, input_values.eq(args.mask_value))
+# mre = masked_relative_error(
+#     predict_ones, tagert_values, input_values.eq(args.mask_value)
+# )
+# logger.info(f"MSE: {mse.item()}, MRE: {mre.item()}")
+
+# # %% [markdown]
+# # # Analysis
+# model.to(device)
+# model.eval()
+
+# # %% [markdown]
+# # ## Cell embeddings
+
+
+# # def map_transform(examples: Dict[str, List]) -> Dict[str, torch.Tensor]:
+# #     """
+# #     Transform batch examples to a tensor.
+# #     """
+# #     # tensorize the examples
+# #     examples = {
+# #         k: [torch.tensor(v_i) for v_i in v] for k, v in examples.items() if k != "id"
+# #     }
+# #     examples = collator(examples)
+# #     return examples
+
+
+# # valid_dataset.set_transform(map_transform)
+
+# # cell_gene_embeddings = model.encoder(valid_dataset[:10000]["gene"].to(device))
+# # cell_gene_embeddings = cell_gene_embeddings.detach().cpu().numpy()
+
+# # cell_embeddings = np.mean(cell_gene_embeddings, axis=1)
